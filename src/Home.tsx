@@ -1,8 +1,9 @@
 import Intro from './views/Intro';
+import Play from './views/Play/Play';
 
 function Home() {
     return (
-        <Intro />
+        <Play />
     );
 }
 

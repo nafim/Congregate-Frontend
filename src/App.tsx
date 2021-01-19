@@ -16,6 +16,9 @@ function App() {
             <Route exact path="/">
                 <Home />
             </Route>
+            {/* <Route path="/play">
+                <Play />
+            </Route> */}
         </Switch>
     </div>
 </Router>

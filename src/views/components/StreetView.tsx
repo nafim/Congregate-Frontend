@@ -20,7 +20,7 @@ function StreetView(props: StreetViewProps) {
         return () => {
             google.maps.event.clearInstanceListeners(streetView);
         }
-    },)
+    },[])
 
     const createView = (ref: React.RefObject<HTMLDivElement>) => {
         if (!streetView) {
@@ -39,7 +39,7 @@ function StreetView(props: StreetViewProps) {
     }
 
     return (
-        <div style={{ height: '100%' }} ref={ref}/>
+        <div style={{ height: '100%', width: "100%" }} ref={ref}/>
     );
 
 }
