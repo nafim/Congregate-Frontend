@@ -10,6 +10,16 @@ import {
     Drawer,
     Hidden,
 } from '@material-ui/core';
+import {
+    initiateSocket,
+    disconnectSocket,
+    sendPlayerReady,
+    subscribeToGameStatus,
+    GameStatusData,
+    GameStatus,
+    subscribeToInitialPosition,
+    GameUpdateData,
+} from '../components/GameSocket';
 import ChatIcon from '@material-ui/icons/Chat';
 import { makeStyles } from '@material-ui/core/styles';
 import StreetView from '../components/StreetView';
@@ -57,13 +67,22 @@ function Play() {
     const classes = useStyles();
 
     const [chatOpen, setChatOpen] = useState(false);
+    const [position, setPosition] = useState({ lat: 37.869260, lng: -122.254811 });
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
     }
 
+    const setInitialPosition = (initialPositionData: GameUpdateData) => {
+        setPosition(initialPositionData.pos);
+    }
+
+    useEffect(() => {
+        subscribeToInitialPosition(setInitialPosition);
+    },)
+
     const streetViewOptions = {
-        position: { lat: 37.869260, lng: -122.254811 },
+        position,
         pov: { heading: 165, pitch: 0 },
         motionTracking: false,
         motionTrackingControl: false,

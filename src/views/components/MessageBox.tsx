@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {VariableSizeList as MessageList} from 'react-window';
-import classes from '*.module.sass';
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -64,7 +64,7 @@ function MessageComponent(props: MessageProps) {
 
     return (
         <div className={classes.root}>
-            <Typography align='right' variant='caption' color='textSecondary'> {props.message.user} </Typography>
+            <Typography align='center' variant='caption' color='textSecondary'> {props.message.user} </Typography>
             <Typography variant='body1'> {props.message.messageText} </Typography>
         </div>
     )

@@ -4,7 +4,8 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
-import Home from './Home';
+import Home from './views/Home/Home';
+import Play from './views/Play/Play';
 
 function App() {
   return (
@@ -16,9 +17,9 @@ function App() {
             <Route exact path="/">
                 <Home />
             </Route>
-            {/* <Route path="/play">
+            <Route path="/play">
                 <Play />
-            </Route> */}
+            </Route>
         </Switch>
     </div>
 </Router>
