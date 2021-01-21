@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
     Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
     FormControl,
     FormHelperText,
+    IconButton,
+    InputAdornment,
     OutlinedInput,
     Typography,
 } from '@material-ui/core';
@@ -19,15 +16,35 @@ import {
     GameStatusData,
     GameStatus,
 } from '../../components/GameSocket';
-import { PrivateGameMenuState } from './PrivateGameMenu';
+import { makeStyles } from '@material-ui/core/styles';
+import { MainMenuState } from './MainMenu';
+import { ArrowForward } from '@material-ui/icons';
+
+const useStyles = makeStyles((theme) => ({
+    instructions: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(2)
+    },
+    cancelButton: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(1)
+    },
+    centered: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+}));
 
 interface JoinGameProps {
     username: string;
-    handleStateChange: (newState: PrivateGameMenuState) => void;
-    closePrivateGameMenu: () => void;
+    handleStateChange: (newState: MainMenuState) => void;
 }
 
 function JoinGame(props: JoinGameProps) {
+    const classes = useStyles();
     const [gameID, setGameID] = useState("");
     const [gameIDError, setGameIDError] = useState(false);
     const [gameIDErrorText, setGameIDErrorText] = useState("");
@@ -48,6 +65,11 @@ function JoinGame(props: JoinGameProps) {
         }
     }
 
+    const handleCancel = () => {
+        disconnectSocket();
+        props.handleStateChange(MainMenuState.LandingMenu);
+    }
+
     const handleStartGame = () => {
         if (isValidGameID()) {
             const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
@@ -61,17 +83,21 @@ function JoinGame(props: JoinGameProps) {
     }
     const waitForGame = (data: GameStatusData) => {
         if (data.status === GameStatus.Starting) {
-            props.handleStateChange(PrivateGameMenuState.Ready);
+            props.handleStateChange(MainMenuState.Ready);
         }
     }
 
     return (
         <div>
-            <DialogTitle id="alert-dialog-title">{"Join Game"}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Enter the GameID of the game you want to join
-                </DialogContentText>
+            <div className={classes.instructions}>
+                <Typography variant='subtitle1' align='center' color='textSecondary'>
+                    Enter the code of the game you want to join:
+                </Typography>
+            </div>
+            <form className={classes.centered} noValidate autoComplete="off" onSubmit={(e) => {
+                e.preventDefault();
+                handleStartGame();
+            }}>
                 <FormControl error={gameIDError}>
                     <OutlinedInput
                         id="gameID"
@@ -79,23 +105,30 @@ function JoinGame(props: JoinGameProps) {
                         placeholder='name'
                         value={gameID}
                         onChange={handleGameIDChange}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                aria-label="submit login info"
+                                edge="end"
+                                onClick={handleStartGame}
+                                >
+                                    <ArrowForward />
+                                </IconButton>
+                            </InputAdornment>
+                        }
                     />
                     <FormHelperText id="gameID-error-text">{gameIDErrorText}</FormHelperText>
                 </FormControl>
+            </form>
+            <div className={classes.centered}>
                 <Button
-                    // className={}
-                    variant="contained"
-                    color="primary"
-                    onClick={e => handleStartGame()}
+                className={classes.cancelButton} 
+                color="secondary"
+                onClick={e => handleCancel()}
                 >
-                    StartGame
-                </Button>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={props.closePrivateGameMenu} color="secondary" autoFocus>
                     Cancel
                 </Button>
-            </DialogActions>
+            </div>
         </div>
     );
 }

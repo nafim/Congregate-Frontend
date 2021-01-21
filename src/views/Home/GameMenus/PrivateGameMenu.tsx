@@ -1,109 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router';
+import React from 'react';
 import {
     Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
+    Typography,
 } from '@material-ui/core';
-import ChooseType from './ChooseType';
-import CreateGame from './CreateGame';
-import JoinGame from './JoinGame';
+import { makeStyles } from '@material-ui/core/styles';
+import {MainMenuState} from './MainMenu';
 
-
-interface PrivateGameMenuProps {
-    username: string;
-    open: boolean;
-    closePrivateGameMenu: () => void;
-}
+const useStyles = makeStyles((theme) => ({
+    introButtons: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1)
+    },
+    cancelButton: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(0)
+    },
+    centered: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+}));
 
 export enum PrivateGameMenuState {
-    ChoosingType = 1,
+    LandingMenu = 1,
+    RandomGame,
+    PrivateGame,
     CreatingGame,
     JoiningGame,
     Ready,
 }
 
+interface PrivateGameMenuProps {
+    handleStateChange: (newState: MainMenuState) => void;
+}
+
 function PrivateGameMenu(props: PrivateGameMenuProps) {
-    const [menuState, setMenuState] = useState(PrivateGameMenuState.ChoosingType);
-    
+    const classes = useStyles();
 
-    // handlers
-    const handleStateChange = (newState: PrivateGameMenuState) => {
-        setMenuState(newState);
-    }
-
-    // different menu content
-    switch (menuState) {
-        case PrivateGameMenuState.ChoosingType:
-            return (
-                <Dialog
-                open={props.open}
-                onClose={props.closePrivateGameMenu}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+    return (
+        <div>
+            <Button
+            className={classes.introButtons} 
+            variant="contained" 
+            color="primary"
+            onClick={e => props.handleStateChange(MainMenuState.CreateGame)}
             >
-                <ChooseType
-                    handleStateChange={handleStateChange}
-                    closePrivateGameMenu={props.closePrivateGameMenu}
-                />
-            </Dialog>
-            );
-        case PrivateGameMenuState.CreatingGame:
-            return (
-                <Dialog
-                open={props.open}
-                onClose={props.closePrivateGameMenu}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <CreateGame
-                    username={props.username}
-                    handleStateChange={handleStateChange}
-                    closePrivateGameMenu={props.closePrivateGameMenu}
-                />
-            </Dialog>
-            );
-        case PrivateGameMenuState.JoiningGame:
-            return (
-                <Dialog
-                open={props.open}
-                onClose={props.closePrivateGameMenu}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <JoinGame
-                    username={props.username}
-                    handleStateChange={handleStateChange}
-                    closePrivateGameMenu={props.closePrivateGameMenu}
-                />
-            </Dialog>
-            );
-        case PrivateGameMenuState.Ready:
-            return(<Redirect to="/play" />);
-    
-        default:
-            return (
-                <Dialog
-                open={props.open}
-                onClose={props.closePrivateGameMenu}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <div></div>
-            </Dialog>
-            );
-    }
+                Create Game
+            </Button>
+            <Typography align='center' variant='subtitle1' color={'textSecondary'}>
+                Or
+            </Typography>
+            <div className={classes.centered}>
+                <Button
+                className={classes.introButtons} 
+                variant="contained" 
+                color="primary"
+                onClick={e => props.handleStateChange(MainMenuState.JoinGame)}
+                >
+                    Join Game
+                </Button>
+            </div>
+            <div className={classes.centered}>
+                <Button
+                className={classes.cancelButton} 
+                color="secondary"
+                onClick={e => props.handleStateChange(MainMenuState.LandingMenu)}
+                >
+                    Cancel
+                </Button>
+            </div>
+        </div>
+    );
 }
 
 export default PrivateGameMenu;

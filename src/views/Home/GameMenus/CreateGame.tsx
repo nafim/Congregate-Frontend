@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
     Typography,
 } from '@material-ui/core';
 import {
@@ -16,17 +11,41 @@ import {
     GameStatusData,
     GameStatus,
 } from '../../components/GameSocket';
-import { PrivateGameMenuState } from './PrivateGameMenu';
+import { makeStyles } from '@material-ui/core/styles';
+import { MainMenuState } from './MainMenu';
+
+const useStyles = makeStyles((theme) => ({
+    instructions: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(2)
+    },
+    cancelButton: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1)
+    },
+    centered: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+}));
 
 interface CreateGameProps {
     username: string;
-    handleStateChange: (newState: PrivateGameMenuState) => void;
-    closePrivateGameMenu: () => void;
+    handleStateChange: (newState: MainMenuState) => void;
 }
 
 
 function CreateGame(props: CreateGameProps) {
+    const classes = useStyles();
     const [gameID, setGameID] = useState("");
+
+    const handleCancel = () => {
+        disconnectSocket();
+        props.handleStateChange(MainMenuState.LandingMenu);
+    }
 
     const fetchGameID = () => {
         fetch(process.env.REACT_APP_API_ENDPOINT + '/getUniqueGameID')
@@ -47,7 +66,7 @@ function CreateGame(props: CreateGameProps) {
     }
     const waitForGame = (data: GameStatusData) => {
         if (data.status === GameStatus.Starting) {
-            props.handleStateChange(PrivateGameMenuState.Ready);
+            props.handleStateChange(MainMenuState.Ready);
         }
     }
 
@@ -57,18 +76,25 @@ function CreateGame(props: CreateGameProps) {
 
     return (
         <div>
-            <DialogTitle id="alert-dialog-title">{"Create Game"}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Share the following GameID with your friend
-                </DialogContentText>
-                <Typography>{gameID}</Typography>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={props.closePrivateGameMenu} color="secondary" autoFocus>
+            <div className={classes.instructions}>
+                <Typography variant='subtitle1' align='center' color='textSecondary'>
+                    Others can join your game using the following code:
+                </Typography>
+            </div>
+            <div className={classes.instructions}>
+                <Typography variant='h5' align='center' color='textPrimary'>
+                    {gameID}
+                </Typography>
+            </div>
+            <div className={classes.centered}>
+                <Button
+                className={classes.cancelButton} 
+                color="secondary"
+                onClick={e => handleCancel()}
+                >
                     Cancel
                 </Button>
-            </DialogActions>
+            </div>
         </div>
     );
 }
