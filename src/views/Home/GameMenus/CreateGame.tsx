@@ -48,7 +48,7 @@ function CreateGame(props: CreateGameProps) {
     }
 
     const fetchGameID = () => {
-        fetch(process.env.REACT_APP_API_ENDPOINT + '/getUniqueGameID')
+        fetch(process.env.REACT_APP_API_BACKEND + '/api/getUniqueGameID')
         .then(res => res.json())
         .then(data => {
             if (data.error) throw Error(data.error);
@@ -60,8 +60,8 @@ function CreateGame(props: CreateGameProps) {
         .catch(err => console.error(err))
     }
     const afterSocketConnect = () => {
+        console.log("Connected")
         sendPlayerReady();
-        console.log('connected');
         subscribeToGameStatus(waitForGame);
     }
     const waitForGame = (data: GameStatusData) => {

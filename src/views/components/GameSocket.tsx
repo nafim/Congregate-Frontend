@@ -1,15 +1,21 @@
-const io = require("socket.io-client");
+import io from 'socket.io-client';
 let socket: SocketIOClient.Socket;
 
 // Initiate 
-export const initiateSocket = (room: string, username: string, authToken: string, cb: () => void) => {
-    socket = io(process.env.REACT_APP_BACKEND_URL, {
-        query: { room, username },
+export const initiateSocket = (gameID: string, username: string, authToken: string, cb: () => void) => {
+    socket = io(process.env.REACT_APP_API_BACKEND!, {
+        query: { gameID },
+        // @ts-ignore
         auth: {
             token: authToken
         }
     });
     socket.on('connect', cb);
+    console.log(socket);
+    console.log(io);
+    socket.on('connect_error', (err: any) => {
+        console.log(err.message);
+    });
     console.log('Connecting to socket...');
     socket.on('disconnect', () => {
         console.log('Disconnecting socket...');
@@ -20,11 +26,13 @@ export const disconnectSocket = () => {
     if (socket) socket.disconnect();
 }
 
+export interface GamePosition {
+    lat: number;
+    lng: number;
+}
+
 export interface GameUpdateData {
-    pos: {
-        lat: number,
-        lng: number
-    }
+    pos: GamePosition
 }
 
 // emit updated game info

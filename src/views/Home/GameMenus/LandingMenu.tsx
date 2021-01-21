@@ -34,6 +34,11 @@ interface LandingMenuProps {
 function LandingMenu(props: LandingMenuProps) {
     const classes = useStyles();
 
+    const handleButtonClick = (newState: MainMenuState) => {
+        if (props.isValidUserName()) {
+            props.handleStateChange(newState);
+        }
+    }
 
     return(
         <div>
@@ -64,7 +69,7 @@ function LandingMenu(props: LandingMenuProps) {
                     className={classes.introButtons} 
                     variant="contained" 
                     color="primary"
-                    onClick={e => props.handleStateChange(MainMenuState.PrivateGame)}
+                    onClick={e => handleButtonClick(MainMenuState.PrivateGame)}
                 >
                     Private Game
                 </Button>

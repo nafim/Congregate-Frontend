@@ -36,7 +36,7 @@ function MainMenu() {
     useEffect(() => {
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
         if (token) return;
-        fetch(process.env.REACT_APP_API_ENDPOINT + '/getAnonymousToken')
+        fetch(process.env.REACT_APP_API_BACKEND + '/api/getAnonymousToken')
         .then(res => res.json())
         .then(data => {
             if (data.error) throw Error(data.error);
