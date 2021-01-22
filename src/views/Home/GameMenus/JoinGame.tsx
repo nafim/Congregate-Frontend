@@ -83,6 +83,7 @@ function JoinGame(props: JoinGameProps) {
     }
     const waitForGame = (data: GameStatusData) => {
         if (data.status === GameStatus.Starting) {
+            console.log("Game is starting!!!")
             props.handleStateChange(MainMenuState.Ready);
         }
     }

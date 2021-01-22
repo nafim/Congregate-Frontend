@@ -27,7 +27,10 @@ function Play() {
     var initialPosition = {lat: 42.345573, lng: -71.098326};
 
     const setInitialPosition = (initialPositionData: GameUpdateData) => {
+        console.log("Got an initial position");
+        console.log(initialPositionData.pos);
         initialPosition = initialPositionData.pos;
+        console.log("this is the new init pos:", initialPosition);
         setReady(true);
     }
 

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cancelButton: {
         marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(0)
+        marginBottom: theme.spacing(1)
     },
     centered: {
         display: 'flex',

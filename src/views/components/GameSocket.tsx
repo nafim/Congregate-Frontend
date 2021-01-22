@@ -47,12 +47,13 @@ export const sendPlayerReady = () => {
 
 
 export enum GameStatus {
-    InLobby, // when waiting for other player
-    Starting, // game is starting in 3 seconds
-    InProgress, // game in progress
-    Win, // players found each other
-    Loss, // players ran out of time
+    InLobby = "InLobby", // when waiting for other player
+    Starting = "Starting", // game is starting in 3 seconds
+    InProgress = "InProgress", // game in progress
+    Win = "Win", // players found each other
+    Loss = "Loss", // players ran out of time
 }
+
 
 // game status data object definition
 export interface GameStatusData {

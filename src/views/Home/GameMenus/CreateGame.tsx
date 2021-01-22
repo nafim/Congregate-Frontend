@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Button,
+    CircularProgress,
     Typography,
 } from '@material-ui/core';
 import {
@@ -19,7 +20,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(2),
         marginRight: theme.spacing(2),
         marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'center'
     },
     cancelButton: {
         marginTop: theme.spacing(1),
@@ -82,9 +85,14 @@ function CreateGame(props: CreateGameProps) {
                 </Typography>
             </div>
             <div className={classes.instructions}>
-                <Typography variant='h5' align='center' color='textPrimary'>
-                    {gameID}
-                </Typography>
+                {gameID && 
+                    <Typography variant='h5' align='center' color='textPrimary'>
+                        {gameID}
+                    </Typography>
+                }
+                {!gameID &&
+                    <CircularProgress />
+                }
             </div>
             <div className={classes.centered}>
                 <Button
