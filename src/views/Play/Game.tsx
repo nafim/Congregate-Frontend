@@ -18,11 +18,12 @@ import {
     subscribeToInitialPosition,
     GameUpdateData,
     sendGameUpdate,
-} from '../components/GameSocket';
+} from '../api/GameSocket';
 import ChatIcon from '@material-ui/icons/Chat';
 import { makeStyles } from '@material-ui/core/styles';
-import StreetView from '../components/StreetView';
-import ChatWindow from '../components/ChatWindow';
+import StreetView from './components/StreetView';
+import ChatWindow from './components/ChatWindow';
+import EndGameMenu from './components/EndGameMenu';
 
 const drawerWidth = 350;
 
@@ -70,13 +71,34 @@ function Game(props: GameProps) {
     const classes = useStyles();
 
     const [chatOpen, setChatOpen] = useState(false);
+    const [endGameMessage, setEndGameMessage] = useState('');
+    const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
     }
 
+    const handleEndGameMenuOpen = (open: boolean) => {
+        setEndGameMenuOpen(open);
+    }
+
     const handlePositionChange = (newPosition: GamePosition) => {
         sendGameUpdate({pos: newPosition});
+    }
+
+    useEffect(() => {
+        subscribeToGameStatus(handleGameStatus);
+    })
+
+    const handleGameStatus = (gameStatusData: GameStatusData) => {
+        if (gameStatusData.status === GameStatus.Win) {
+            setEndGameMessage("You found your friend!");
+            setEndGameMenuOpen(true);
+        }
+        if (gameStatusData.status === GameStatus.Loss) {
+            setEndGameMessage("Time's Up!");
+            setEndGameMenuOpen(true);
+        }
     }
 
     const streetViewOptions = {
@@ -111,6 +133,13 @@ function Game(props: GameProps) {
                 />
             </div>
             <div className={classes.content}>
+                {
+                    endGameMenuOpen &&
+                    <EndGameMenu
+                        message={endGameMessage}
+                        handleEndGameMenuOpen={handleEndGameMenuOpen}
+                    />
+                }
                 <StreetView
                     apiKey={process.env.REACT_APP_MAPS_API_KEY!}
                     streetViewOptions={streetViewOptions}

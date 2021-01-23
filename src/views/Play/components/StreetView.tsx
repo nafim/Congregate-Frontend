@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import { Loader } from "@googlemaps/js-api-loader";
 
 interface StreetViewProps {
@@ -13,28 +13,30 @@ function StreetView(props: StreetViewProps) {
         apiKey: props.apiKey,
         version: "weekly"
     })
-    var streetView: google.maps.StreetViewPanorama;
+    const [streetView, setStreetView] = useState<google.maps.StreetViewPanorama>();
 
     useEffect(() => {
         createView(ref);
         return () => {
-            google.maps.event.clearInstanceListeners(streetView);
+            google.maps.event.clearInstanceListeners(streetView!);
         }
-    },[])
+    },[props.streetViewOptions.position])
 
     const createView = (ref: React.RefObject<HTMLDivElement>) => {
         if (!streetView) {
             loader
             .load()
             .then(() => {
-                streetView = new google.maps.StreetViewPanorama(ref.current!, props.streetViewOptions);
-                streetView.addListener('position_changed', () => {
-                    props.onPositionChanged(streetView.getPosition().toJSON());
+                setStreetView(new google.maps.StreetViewPanorama(ref.current!, props.streetViewOptions));
+                streetView!.addListener('position_changed', () => {
+                    props.onPositionChanged(streetView!.getPosition().toJSON());
                 })
             })
             .catch(e => {
                 console.error(e);
             });
+        } else {
+            streetView.setPosition(props.streetViewOptions.position!);
         }
     }
 

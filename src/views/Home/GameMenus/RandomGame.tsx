@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import {
+    initiateSocket,
+    disconnectSocket,
+    subscribeToMatchSuccess,
+    MatchSuccessData,
+} from '../../api/GameSocket';
 import {
     Button,
     CircularProgress,
     Typography,
 } from '@material-ui/core';
-import {
-    initiateSocket,
-    disconnectSocket,
-    sendPlayerReady,
-    subscribeToGameStatus,
-    GameStatusData,
-    GameStatus,
-} from '../../components/GameSocket';
+import { getAnonymousToken } from '../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
 
@@ -35,64 +35,57 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-interface CreateGameProps {
-    username: string;
+interface RandomGameProps {
     handleStateChange: (newState: MainMenuState) => void;
 }
 
 
-function CreateGame(props: CreateGameProps) {
+function RandomGame(props: RandomGameProps) {
     const classes = useStyles();
-    const [gameID, setGameID] = useState("");
+    const history = useHistory();
 
     const handleCancel = () => {
         disconnectSocket();
         props.handleStateChange(MainMenuState.LandingMenu);
     }
 
-    const fetchGameID = () => {
-        fetch(process.env.REACT_APP_API_BACKEND + '/api/getUniqueGameID')
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) throw Error(data.error);
-            setGameID(data.gameID);
-            // connect to socket
-            const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
-            initiateSocket(data.gameID, props.username, token!, afterSocketConnect);
-        })
-        .catch(err => console.error(err))
-    }
-    const afterSocketConnect = () => {
-        console.log("Connected")
-        sendPlayerReady();
-        subscribeToGameStatus(waitForGame);
-    }
-    const waitForGame = (data: GameStatusData) => {
-        if (data.status === GameStatus.Starting) {
-            props.handleStateChange(MainMenuState.Ready);
-        }
-    }
-
     useEffect(() => {
         fetchGameID();
     }, [])
+
+    const fetchGameID = () => {
+        // check if token exists, then make socket connection
+        const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
+        if (token) {
+            initiateSocket(token, undefined, afterSocketConnect);
+        } else {
+            getAnonymousToken()
+            .then( anonymousToken => {
+                initiateSocket(anonymousToken, undefined, afterSocketConnect);
+            })
+        }
+    }
+
+    const afterSocketConnect = () => {
+        console.log("Connected")
+        subscribeToMatchSuccess(waitForMatch);
+    }
+
+    const waitForMatch = (matchSuccessData: MatchSuccessData) => {
+        const gameID = matchSuccessData.gameID;
+        history.push(`/play/${gameID}`);
+
+    }
 
     return (
         <div>
             <div className={classes.instructions}>
                 <Typography variant='subtitle1' align='center' color='textSecondary'>
-                    Others can join your game using the following code:
+                    Finding a match...
                 </Typography>
             </div>
             <div className={classes.instructions}>
-                {gameID && 
-                    <Typography variant='h5' align='center' color='textPrimary'>
-                        {gameID}
-                    </Typography>
-                }
-                {!gameID &&
                     <CircularProgress />
-                }
             </div>
             <div className={classes.centered}>
                 <Button
@@ -107,4 +100,4 @@ function CreateGame(props: CreateGameProps) {
     );
 }
 
-export default CreateGame;
+export default RandomGame;

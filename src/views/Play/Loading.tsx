@@ -29,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Loading() {
+interface LoadingProps {
+    loadingMessage: string;
+}
+
+function Loading(props: LoadingProps) {
     const classes = useStyles();
 
     return (
@@ -40,7 +44,7 @@ function Loading() {
                         <Typography variant="h6" className={classes.title}>
                         </Typography>
                         <Typography variant="h6" className={classes.title}>
-                            Loading...
+                            {props.loadingMessage}
                         </Typography>
                     </Toolbar>
                 </AppBar>
