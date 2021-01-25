@@ -1,40 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-    Button,
     IconButton,
-    Toolbar,
-    Box,
-    Typography,
-    Drawer,
-    Hidden,
-    Divider,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
     TextField,
+    FormControl,
+    InputAdornment,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import {VariableSizeList as MessageList} from 'react-window';
-import classes from '*.module.sass';
+import SendIcon from '@material-ui/icons/Send';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(1),
+        marginBottom: theme.spacing(1)
     },
 }));
 
-function ChatInput() {
+interface ChatInputProps {
+    addMessage: (messageText: string) => void;
+}
+
+function ChatInput(props: ChatInputProps) {
     const classes = useStyles();
+    const [messageText, setMessageText] = useState("");
+
+    const handleSendMessage = () => {
+        props.addMessage(messageText);
+        console.log('enter was submitted');
+        setMessageText("");
+    }
 
     return(
-        <TextField className={classes.root}
-            id="outlined-multiline-static"
-            multiline
-            rows={3}
-            placeholder="Type your message..."
-            variant="outlined"
-        />
+        <div className={classes.root}>
+            <form noValidate autoComplete="off" onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+            }}>
+                <TextField
+                    id="chat-input"
+                    multiline
+                    fullWidth
+                    rows={1}
+                    rowsMax={2}
+                    placeholder="Type your message..."
+                    variant="outlined"
+                    onChange={(evt) => setMessageText(evt.target.value)}
+                    value={messageText}
+                    InputProps={{
+                        endAdornment:
+                        <InputAdornment position="end">
+                            <IconButton
+                            aria-label="send-message"
+                            edge="end"
+                            onClick={handleSendMessage}
+                            >
+                                <SendIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    }}
+                />
+            </form>
+        </div>
     );
 }
 

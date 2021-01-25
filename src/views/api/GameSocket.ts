@@ -4,7 +4,7 @@ let socket: SocketIOClient.Socket;
 // Initiate socket connection
 export const initiateSocket = (authToken: string, gameID?: string, cb?: () => void) => {
     socket = io(process.env.REACT_APP_API_BACKEND!, {
-        query: gameID ? { gameID }: undefined,
+        query: gameID ? { gameID } : undefined,
         // @ts-ignore
         auth: {
             token: authToken
@@ -31,6 +31,10 @@ export const disconnectSocket = () => {
     if (socket) socket.disconnect();
 }
 
+//////////////////////////////////////////////////////
+///////////////// Game communication /////////////////
+//////////////////////////////////////////////////////
+
 export interface GamePosition {
     lat: number;
     lng: number;
@@ -38,23 +42,6 @@ export interface GamePosition {
 
 export interface GameUpdateData {
     pos: GamePosition
-}
-
-// emit updated game info
-export const sendGameUpdate = (gameUpdateData: GameUpdateData) => {
-    if (socket) socket.emit('gameUpdate', gameUpdateData);
-}
-
-// on game start an initial position will be given
-export const subscribeToInitialPosition = (cb: (data: GameUpdateData) => void) => {
-    if (!socket) return false;
-    socket.on('initialPosition', cb);
-    return true;
-}
-
-// emit ready status
-export const sendPlayerReady = () => {
-    if (socket) socket.emit('playerReady');
 }
 
 export enum GameStatus {
@@ -72,16 +59,33 @@ export interface GameStatusData {
     score: number // cumulative score after each game
 }
 
+// when successfully matched in random game, this event is sent
+export interface MatchSuccessData {
+    gameID: string
+}
+
+// emit ready status
+export const sendPlayerReady = () => {
+    if (socket) socket.emit('playerReady');
+}
+
+// emit updated game info
+export const sendGameUpdate = (gameUpdateData: GameUpdateData) => {
+    if (socket) socket.emit('gameUpdate', gameUpdateData);
+}
+
+// on game start an initial position will be given
+export const subscribeToInitialPosition = (cb: (data: GameUpdateData) => void) => {
+    if (!socket) return false;
+    socket.on('initialPosition', cb);
+    return true;
+}
+
 // Subscribe to game status updates
 export const subscribeToGameStatus = (cb: (data: GameStatusData) => void) => {
     if (!socket) return false;
     socket.on('gameStatus', cb);
     return true;
-}
-
-// when successfully matched in random game, this event is sent
-export interface MatchSuccessData {
-    gameID: string
 }
 
 export const subscribeToMatchSuccess = (cb: (data: MatchSuccessData) => void) => {
@@ -90,5 +94,32 @@ export const subscribeToMatchSuccess = (cb: (data: MatchSuccessData) => void) =>
     return true;
 }
 
+//////////////////////////////////////////////////////
+///////////////// Chat communication /////////////////
+//////////////////////////////////////////////////////
+
+// message data object definition
+export interface MessageEventData {
+    text: string
+    name: string
+    timestamp: number // milliseconds since Unix epoch
+}
+
+// emit message data
+export const sendMessage = (messageText: string) => {
+    const messageData: MessageEventData = {
+        text: messageText,
+        name: 'John',
+        timestamp: Date.now()
+    };
+    if (socket) socket.emit('message', messageData);
+}
+
+// receiving messages from other userss
+export const subscribeToMessage = (cb: (data: MessageEventData) => void) => {
+    if (!socket) return false;
+    socket.on('message', cb);
+    return true;
+}
 
 

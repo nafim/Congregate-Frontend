@@ -22,6 +22,14 @@ function StreetView(props: StreetViewProps) {
         }
     },[props.streetViewOptions.position])
 
+    useEffect(() => {
+        if (streetView) {
+            streetView!.addListener('position_changed', () => {
+                props.onPositionChanged(streetView!.getPosition().toJSON());
+            })
+        }
+    })
+
     const createView = (ref: React.RefObject<HTMLDivElement>) => {
         if (!streetView) {
             loader

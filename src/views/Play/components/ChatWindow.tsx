@@ -10,11 +10,10 @@ import {
     ListItemText,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import MailIcon from '@material-ui/icons/Mail';
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MessageBox from './MessageBox';
+import MessageBox, { Message, Sender } from './MessageBox';
 import ChatInput from './ChatInput';
+import { MessageEventData, sendMessage, subscribeToMessage } from '../../api/GameSocket';
 
 const drawerWidth = 350;
 
@@ -50,9 +49,36 @@ interface ChatWindowProps {
     handleChatToggle: () => void
 }
 
-
 function ChatWindow(props: ChatWindowProps) {
     const classes = useStyles();
+
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    useEffect(() => {
+        subscribeToMessage(receiveMessage);
+    },[])
+
+    const receiveMessage = (messageData: MessageEventData) => {
+        console.log("Receiving Message: " + messageData.text);
+        const newMessage = {
+            messageText: messageData.text,
+            name: messageData.name,
+            sender: Sender.Other
+        };
+        setMessages(messages => [...messages, newMessage]);
+    }
+
+    const addMessage = (messageText: string) => {
+        if (!messageText) return;
+        const newMessage = {
+            messageText,
+            name: "You",
+            sender: Sender.Me
+            
+        };
+        setMessages(messages => [...messages, newMessage]);
+        sendMessage(messageText);
+    }
 
     return (
         <nav aria-label="chat window">
@@ -70,8 +96,12 @@ function ChatWindow(props: ChatWindowProps) {
                         <ChevronRightIcon style={{color: 'white'}} />
                     </IconButton>
                 </div>
-                <MessageBox />
-                <ChatInput />
+                <MessageBox
+                    messages={messages}
+                />
+                <ChatInput 
+                    addMessage={addMessage}
+                />
             </Drawer>
         </nav>
     );
