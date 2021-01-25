@@ -8,8 +8,10 @@ import AutoSizer from "react-virtualized-auto-sizer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        border: '2px solid rgba(0, 0, 0, 0.12)',
+        overflow: 'hidden',
         padding: theme.spacing(2, 0, 0),
-        width: "100%",
+        margin: theme.spacing(1, 1, 1),
         height: "100%",
     },
     messageContainer: {
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     messageContent: {
         display: 'flex',
+        wordBreak: 'break-word',
         flexDirection: 'column',
         width: '65%',
     }
@@ -30,7 +33,7 @@ export enum Sender {
     Me='me'
 }
 
-function MessageRow({index, data}: ListChildComponentProps) {
+function MessageRow({index, data, style}: ListChildComponentProps) {
     const classes = useStyles();
     const rowRef = useRef<HTMLDivElement>(null);
     const message = data.messages[index];
@@ -49,22 +52,24 @@ function MessageRow({index, data}: ListChildComponentProps) {
         }, [rowRef]);
 
     return (
-        <div ref={rowRef} 
-        className={classes.messageContainer} 
-        style={message.sender === Sender.Me ? {alignItems: "end"} : {alignItems: "start"}}
-        >
-            <div 
-                className={classes.messageContent}
+            <div style={style}>
+                <div ref={rowRef} 
+                className={classes.messageContainer} 
                 style={message.sender === Sender.Me ? {alignItems: "end"} : {alignItems: "start"}}
-            >
-                {
-                    showName() &&
-                    <Typography variant='caption' color='textSecondary'> {message.name} </Typography>
+                >
+                    <div 
+                        className={classes.messageContent}
+                        style={message.sender === Sender.Me ? {alignItems: "end"} : {alignItems: "start"}}
+                    >
+                        {
+                            showName() &&
+                            <Typography variant='caption' color='textSecondary'> {message.name} </Typography>
 
-                }
-                <Typography variant='body1'> {message.messageText} </Typography>
+                        }
+                        <Typography variant='body1'> {message.messageText} </Typography>
+                    </div>
+                </div>
             </div>
-        </div>
     )
 }
 

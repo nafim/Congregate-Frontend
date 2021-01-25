@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
     IconButton,
     TextField,
-    FormControl,
     InputAdornment,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,7 +25,6 @@ function ChatInput(props: ChatInputProps) {
 
     const handleSendMessage = () => {
         props.addMessage(messageText);
-        console.log('enter was submitted');
         setMessageText("");
     }
 
@@ -45,6 +43,12 @@ function ChatInput(props: ChatInputProps) {
                     placeholder="Type your message..."
                     variant="outlined"
                     onChange={(evt) => setMessageText(evt.target.value)}
+                    onKeyDown={(evt) => {
+                        if (evt.key === 'Enter') {
+                            evt.preventDefault();
+                            handleSendMessage();
+                        }
+                    }}
                     value={messageText}
                     InputProps={{
                         endAdornment:

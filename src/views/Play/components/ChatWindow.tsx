@@ -59,7 +59,6 @@ function ChatWindow(props: ChatWindowProps) {
     },[])
 
     const receiveMessage = (messageData: MessageEventData) => {
-        console.log("Receiving Message: " + messageData.text);
         const newMessage = {
             messageText: messageData.text,
             name: messageData.name,
