@@ -6,6 +6,7 @@ import {
 import './App.css';
 import Home from './views/Home/Home';
 import Play from './views/Play/Play';
+import Verify from './views/Verify/Verify';
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
             </Route>
             <Route path="/play">
                 <Play />
+            </Route>
+            <Route path="/verify">
+                <Verify />
             </Route>
         </Switch>
     </div>

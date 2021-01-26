@@ -60,8 +60,8 @@ function RandomGame(props: RandomGameProps) {
             initiateSocket(token, undefined, afterSocketConnect);
         } else {
             getAnonymousToken()
-            .then( anonymousToken => {
-                initiateSocket(anonymousToken, undefined, afterSocketConnect);
+            .then( data => {
+                initiateSocket(data.token, undefined, afterSocketConnect);
             })
         }
     }

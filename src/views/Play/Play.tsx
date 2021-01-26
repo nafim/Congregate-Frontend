@@ -38,8 +38,8 @@ function Play() {
         // if joining from random game matching, socket should already be connected
         if (isSocketConnected()) {
             subscribeToInitialPosition(startingGame);
-            sendPlayerReady();
             subscribeToGameStatus(waitForGame);
+            sendPlayerReady();
         } else {
             // get a token if one doesn't already exist, then connect to socket
             const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
@@ -47,8 +47,8 @@ function Play() {
                 initiateSocket(token, gameID, afterSocketConnect);
             } else {
                 getAnonymousToken()
-                .then( anonymousToken => {
-                    initiateSocket(anonymousToken, gameID, afterSocketConnect);
+                .then( data => {
+                    initiateSocket(data.token, gameID, afterSocketConnect);
                 })
             }
         }
@@ -57,14 +57,12 @@ function Play() {
     const afterSocketConnect = () => {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
-        sendPlayerReady();
         subscribeToGameStatus(waitForGame);
+        sendPlayerReady();
     }
 
     const waitForGame = (data: GameStatusData) => {
-        if (data.status === GameStatus.Starting) {
-            setLoadingMessage("Starting...");
-        } else if (data.status === GameStatus.InProgress) {
+        if (data.status !== GameStatus.InLobby) {
             setLoadingMessage("Starting...");
         }
     }

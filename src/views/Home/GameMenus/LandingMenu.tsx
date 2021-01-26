@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
+import User from './User/User';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(3)
+        marginBottom: theme.spacing(2)
     },
     centered: {
         display: 'flex',
@@ -30,25 +31,28 @@ function LandingMenu(props: LandingMenuProps) {
     const classes = useStyles();
 
     return(
-        <div className={classes.root}>
-            <Button
-            className={classes.introButtons} 
-            variant="contained" 
-            color="primary"
-            onClick={e => props.handleStateChange(MainMenuState.RandomGame)}
-            >
-                Random Game
-            </Button>
-            <div className={classes.centered}>
+        <div>
+            <div className={classes.root}>
                 <Button
                 className={classes.introButtons} 
                 variant="contained" 
                 color="primary"
-                onClick={e => props.handleStateChange(MainMenuState.PrivateGame)}
+                onClick={e => props.handleStateChange(MainMenuState.RandomGame)}
                 >
-                    Private Game
+                    Random Game
                 </Button>
+                <div className={classes.centered}>
+                    <Button
+                    className={classes.introButtons} 
+                    variant="contained" 
+                    color="primary"
+                    onClick={e => props.handleStateChange(MainMenuState.PrivateGame)}
+                    >
+                        Private Game
+                    </Button>
+                </div>
             </div>
+            <User />
         </div>
     );
 }

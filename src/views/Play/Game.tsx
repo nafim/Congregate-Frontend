@@ -8,17 +8,15 @@ import {
     Typography,
 } from '@material-ui/core';
 import {
-    initiateSocket,
     disconnectSocket,
-    sendPlayerReady,
     subscribeToGameStatus,
     GameStatusData,
     GameStatus,
     GamePosition,
-    subscribeToInitialPosition,
     GameUpdateData,
     sendGameUpdate,
 } from '../api/GameSocket';
+import { useHistory } from "react-router-dom";
 import ChatIcon from '@material-ui/icons/Chat';
 import { makeStyles } from '@material-ui/core/styles';
 import StreetView from './components/StreetView';
@@ -69,13 +67,20 @@ interface GameProps{
 
 function Game(props: GameProps) {
     const classes = useStyles();
+    const history = useHistory();
 
     const [chatOpen, setChatOpen] = useState(false);
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
+    const [timeRemaining, setTimeRemainging] = useState(300);
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
+    }
+
+    const handleExit = () => {
+        disconnectSocket();
+        history.push('/');
     }
 
     const handleEndGameMenuOpen = (open: boolean) => {
@@ -84,6 +89,10 @@ function Game(props: GameProps) {
 
     const handlePositionChange = (newPosition: GamePosition) => {
         sendGameUpdate({pos: newPosition});
+    }
+
+    const timer = () => {
+        return (`${Math.floor(timeRemaining/60)}:${Math.round(timeRemaining % 60)}`);
     }
 
     useEffect(() => {
@@ -99,6 +108,7 @@ function Game(props: GameProps) {
             setEndGameMessage("Time's Up!");
             setEndGameMenuOpen(true);
         }
+        setTimeRemainging(gameStatusData.timeRemaining);
     }
 
     const streetViewOptions = {
@@ -117,9 +127,14 @@ function Game(props: GameProps) {
                         <Typography variant="h6" className={classes.title}>
                         </Typography>
                         <Typography variant="h6" className={classes.title}>
-                            Time Remaining: 5:00
+                            Time Remaining: {timer()}
                         </Typography>
-                        <Button color="inherit">Quit</Button>
+                        <Button 
+                            color="inherit"
+                            onClick={e => handleExit()}
+                        >
+                            Exit
+                        </Button>
                         <IconButton edge="start" className={classes.chatButton} color="inherit" aria-label="chat"
                             onClick={handleChatToggle}
                         >

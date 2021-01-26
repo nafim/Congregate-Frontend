@@ -4,8 +4,11 @@ import {
     CircularProgress,
     Toolbar,
     Typography,
+    Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router';
+import { disconnectSocket } from '../api/GameSocket';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,6 +38,12 @@ interface LoadingProps {
 
 function Loading(props: LoadingProps) {
     const classes = useStyles();
+    const history = useHistory();
+
+    const handleCancel = () => {
+        disconnectSocket();
+        history.push('/');
+    }
 
     return (
         <div className={classes.root}>
@@ -46,6 +55,12 @@ function Loading(props: LoadingProps) {
                         <Typography variant="h6" className={classes.title}>
                             {props.loadingMessage}
                         </Typography>
+                        <Button 
+                            color="inherit"
+                            onClick={e => handleCancel()}
+                        >
+                            Cancel
+                        </Button>
                     </Toolbar>
                 </AppBar>
             </div>
