@@ -18,14 +18,13 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     card: {
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     message: {
-
+        margin: theme.spacing(0,5,2)
     },
-    button: {
+    items: {
         marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1)
     },
     centered: {
         display: 'flex',
@@ -41,7 +40,6 @@ interface EndGameMenuProps {
     gameDuration: number;
     handleEndGameMenuOpen: (open: boolean) => void;
 }
-
 
 function EndGameMenu(props: EndGameMenuProps) {
     const classes = useStyles();
@@ -73,25 +71,46 @@ const waitForGame = (data: GameStatusData) => {
         <Card className={classes.card}>
             <CardContent>
                 <div className={classes.message}>
-                    <Typography variant='h5' align="center" color="textSecondary">
+                    <Typography variant='h4' align="center" color="textPrimary">
                         {props.message}
                     </Typography>
-                    <Typography align="center" color="textSecondary">
-                        Statistics for this round:
-                    </Typography>
                 </div>
-                <Divider variant="middle" />
+                <Typography variant='h6' align="center" color="textSecondary">
+                        Results
+                </Typography>
+                <Divider className={classes.items} variant="middle" />
+                <div className={classes.centered}>
+                    <div className={classes.items}>
+                        <Typography variant='subtitle1' color="textPrimary">
+                        Total Score: <b> {props.score} (+{props.score - props.prevScore}) </b> <br />
+                        Round Duration: <b> {Math.round(props.gameDuration/60)}m {Math.round(props.gameDuration%60)}s </b> <br />
+                        </Typography>
+                    </div>
+                </div>
+                <Divider className={classes.items} />
                 {waiting &&
                     <div>
-                        <Typography> {loadingMessage} </Typography>
-                        <CircularProgress />
+                        <div className={classes.centered}>
+                            <Typography className={classes.items} color='textSecondary'>
+                                {loadingMessage} 
+                            </Typography>
+                        </div>
+                        <div className={classes.centered}>
+                            <CircularProgress className={classes.items} />
+                        </div>
                     </div>
                 }
-                <div className={classes.button} >
-                    <Button color="secondary" onClick={e => handlePlayAgain()}>
-                        Play Again
-                    </Button>
-                </div>
+                {!waiting &&
+                    <div className={classes.centered} >
+                        <Button
+                            className={classes.items}
+                            color="primary"
+                            onClick={e => handlePlayAgain()}
+                        >
+                            Play Again
+                        </Button>
+                    </div>
+                }
             </CardContent>
         </Card>
     );
