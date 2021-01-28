@@ -108,7 +108,16 @@ function Game(props: GameProps) {
     }
 
     const showTimer = () => {
-        return (`${Math.floor(timeRemaining/60)}:${Math.round(timeRemaining % 60)}`);
+        const minutes = Math.floor(timeRemaining/60);
+        let seconds = Math.floor(timeRemaining % 60);
+        let secondString;
+        if (seconds < 10) {
+            secondString = "0" + seconds;
+        } else {
+            secondString = String(seconds);
+        }
+        
+        return (`${minutes}:${secondString}`);
     }
 
     useEffect(() => {

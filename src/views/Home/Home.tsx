@@ -1,8 +1,12 @@
 import Intro from './Intro';
+import HowToPlay from './HowToPlay';
 
 function Home() {
     return (
-        <Intro />
+        <div>
+            <Intro />
+            <HowToPlay />
+        </div>
     );
 }
 

@@ -8,7 +8,7 @@ import MainMenu from './GameMenus/MainMenu';
 
 const useStyles = makeStyles((theme) => ({
     heroContent: {
-        padding: theme.spacing(8, 0, 6),
+        padding: theme.spacing(8, 0, 3),
     },
     introButtons: {
         marginLeft: theme.spacing(2),
@@ -40,9 +40,6 @@ function Intro() {
             </div>
             <div className={classes.centered}>
                 <MainMenu />
-            </div>
-            <div className={classes.centered}>
-                    <Button className={classes.introButtons}>How to Play</Button>
             </div>
         </div>
     );
