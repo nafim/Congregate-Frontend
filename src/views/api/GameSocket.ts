@@ -81,6 +81,11 @@ export const subscribeToInitialPosition = (cb: (data: GameUpdateData) => void) =
     return true;
 }
 
+// requeset a game status
+export const requestGameStatus = () => {
+    if (socket) socket.emit(`requestGameStatus`);
+}
+
 // Subscribe to game status updates
 export const subscribeToGameStatus = (cb: (data: GameStatusData) => void) => {
     if (!socket) return false;

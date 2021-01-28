@@ -17,10 +17,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     card: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2),
         display: 'flex',
         justifyContent: 'center'
     },
@@ -40,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
 
 interface EndGameMenuProps {
     message: string;
+    score: number;
+    prevScore: number;
+    gameDuration: number;
     handleEndGameMenuOpen: (open: boolean) => void;
 }
 
@@ -78,7 +77,7 @@ const waitForGame = (data: GameStatusData) => {
                         {props.message}
                     </Typography>
                     <Typography align="center" color="textSecondary">
-                        Here's how you did:
+                        Statistics for this round:
                     </Typography>
                 </div>
                 <Divider variant="middle" />

@@ -73,6 +73,7 @@ function RandomGame(props: RandomGameProps) {
 
     const waitForMatch = (matchSuccessData: MatchSuccessData) => {
         const gameID = matchSuccessData.gameID;
+        disconnectSocket();
         history.push(`/play/${gameID}`);
 
     }

@@ -3,11 +3,6 @@ import {
     IconButton,
     Typography,
     Drawer,
-    Divider,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";

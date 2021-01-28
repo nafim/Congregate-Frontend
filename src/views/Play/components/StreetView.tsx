@@ -17,18 +17,22 @@ function StreetView(props: StreetViewProps) {
 
     useEffect(() => {
         createView(ref);
-        return () => {
-            google.maps.event.clearInstanceListeners(streetView!);
-        }
-    },[props.streetViewOptions.position])
-
-    useEffect(() => {
         if (streetView) {
             streetView!.addListener('position_changed', () => {
                 props.onPositionChanged(streetView!.getPosition().toJSON());
             })
+            return () => {
+                google.maps.event.clearInstanceListeners(streetView!);
+            }
         }
-    })
+    },[streetView])
+
+    // if streetView has been created, then upon position change, update streetView
+    useEffect(() => {
+        if (streetView) {
+            streetView.setPosition(props.streetViewOptions.position!);
+        }
+    }, [props.streetViewOptions.position])
 
     const createView = (ref: React.RefObject<HTMLDivElement>) => {
         if (!streetView) {
@@ -36,15 +40,10 @@ function StreetView(props: StreetViewProps) {
             .load()
             .then(() => {
                 setStreetView(new google.maps.StreetViewPanorama(ref.current!, props.streetViewOptions));
-                streetView!.addListener('position_changed', () => {
-                    props.onPositionChanged(streetView!.getPosition().toJSON());
-                })
             })
             .catch(e => {
                 console.error(e);
             });
-        } else {
-            streetView.setPosition(props.streetViewOptions.position!);
         }
     }
 

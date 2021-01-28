@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
     initiateSocket,
-    isSocketConnected,
     sendPlayerReady,
     subscribeToGameStatus,
     GameStatusData,
     GameStatus,
     subscribeToInitialPosition,
     GameUpdateData,
+    requestGameStatus,
 } from '../api/GameSocket';
 import { getAnonymousToken } from '../api/HTTPRequests';
 import {
@@ -35,34 +35,30 @@ function Play() {
     useEffect(() => {
         // if no gameID, then redirect home
         if (!gameID) return history.push('/');
-        // if joining from random game matching, socket should already be connected
-        if (isSocketConnected()) {
-            subscribeToInitialPosition(startingGame);
-            subscribeToGameStatus(waitForGame);
-            sendPlayerReady();
+        // get a token if one doesn't already exist, then connect to socket
+        const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
+        if (token) {
+            initiateSocket(token, gameID, afterSocketConnect);
         } else {
-            // get a token if one doesn't already exist, then connect to socket
-            const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
-            if (token) {
-                initiateSocket(token, gameID, afterSocketConnect);
-            } else {
-                getAnonymousToken()
-                .then( data => {
-                    initiateSocket(data.token, gameID, afterSocketConnect);
-                })
-            }
+            getAnonymousToken()
+            .then( data => {
+                initiateSocket(data.token, gameID, afterSocketConnect);
+            })
         }
     }, [])
 
     const afterSocketConnect = () => {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
-        subscribeToGameStatus(waitForGame);
         sendPlayerReady();
+        subscribeToGameStatus(waitForGame);
+        requestGameStatus();
     }
 
     const waitForGame = (data: GameStatusData) => {
-        if (data.status !== GameStatus.InLobby) {
+        if (data.status === GameStatus.InLobby) {
+            
+        } else {
             setLoadingMessage("Starting...");
         }
     }
@@ -71,7 +67,9 @@ function Play() {
         console.log("This is the new initial position");
         console.log(initialPositionData.pos);
         setInitialPosition(initialPositionData.pos)
-        setReady(true);
+        if (!ready) {
+            setReady(true);
+        }
     }
 
 

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import clsx from 'clsx';
 import {
     AppBar,
     Button,
+    Fade,
     IconButton,
     Toolbar,
     Typography,
@@ -22,6 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import StreetView from './components/StreetView';
 import ChatWindow from './components/ChatWindow';
 import EndGameMenu from './components/EndGameMenu';
+import game_settings from '../../game_settings';
 
 const drawerWidth = 350;
 
@@ -55,6 +57,16 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
     },
+    endGame: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'fixed',
+        zIndex: 2,
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+    },
     content: {
         height: "100%",
         display: "flex"
@@ -72,7 +84,10 @@ function Game(props: GameProps) {
     const [chatOpen, setChatOpen] = useState(false);
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
-    const [timeRemaining, setTimeRemainging] = useState(300);
+    const [timeRemaining, setTimeRemaining] = useState(game_settings.ROUND_TIMER);
+    const [prevScore, setPrevScore] = useState(0);
+    const [score, setScore] = useState(0);
+    const [gameDuration, setGameDuration] = useState(0);
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
@@ -88,27 +103,56 @@ function Game(props: GameProps) {
     }
 
     const handlePositionChange = (newPosition: GamePosition) => {
+        console.log("Have handled game position change");
         sendGameUpdate({pos: newPosition});
     }
 
-    const timer = () => {
+    const showTimer = () => {
         return (`${Math.floor(timeRemaining/60)}:${Math.round(timeRemaining % 60)}`);
     }
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            return setTimeRemaining(timeRemaining => {
+                if (timeRemaining > 0) {
+                    return timeRemaining - 1
+                } else {
+                    return 0;
+                }
+            });
+        }, 1000);
+        return (() => clearInterval(interval))
+    }, [])
+
+    useEffect(() => {
         subscribeToGameStatus(handleGameStatus);
-    })
+    },[])
 
     const handleGameStatus = (gameStatusData: GameStatusData) => {
+        console.log("have received game status update")
+        // handle endgame
         if (gameStatusData.status === GameStatus.Win) {
-            setEndGameMessage("You found your friend!");
+            setEndGameMessage("You Won!");
             setEndGameMenuOpen(true);
+            // calculate game duration
+            setGameDuration(game_settings.ROUND_TIMER - gameStatusData.timeRemaining);
         }
         if (gameStatusData.status === GameStatus.Loss) {
             setEndGameMessage("Time's Up!");
             setEndGameMenuOpen(true);
+            // calculate game duration
+            setGameDuration(game_settings.ROUND_TIMER - gameStatusData.timeRemaining);
         }
-        setTimeRemainging(gameStatusData.timeRemaining);
+        // synchornize the time remaining
+        if (Math.abs(gameStatusData.timeRemaining - timeRemaining) > 1 ){
+            console.log('resyncrhonize time');
+            setTimeRemaining(gameStatusData.timeRemaining);
+        }
+        // set the score
+        if (gameStatusData.score !== score) {
+            setPrevScore(score);
+            setScore(gameStatusData.score);
+        }
     }
 
     const streetViewOptions = {
@@ -125,9 +169,10 @@ function Game(props: GameProps) {
                 <AppBar style={{backgroundColor: "#4a4a50"}} position="static">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
+                            Score: {score}
                         </Typography>
                         <Typography variant="h6" className={classes.title}>
-                            Time Remaining: {timer()}
+                            Time Remaining: {showTimer()}
                         </Typography>
                         <Button 
                             color="inherit"
@@ -148,13 +193,20 @@ function Game(props: GameProps) {
                 />
             </div>
             <div className={classes.content}>
-                {
-                    endGameMenuOpen &&
-                    <EndGameMenu
-                        message={endGameMessage}
-                        handleEndGameMenuOpen={handleEndGameMenuOpen}
-                    />
-                }
+                <div className={classes.endGame}>
+                    {
+                        endGameMenuOpen &&
+                        <Fade in={endGameMenuOpen}>
+                        <EndGameMenu 
+                            message={endGameMessage}
+                            score={score}
+                            prevScore={prevScore}
+                            gameDuration={gameDuration}
+                            handleEndGameMenuOpen={handleEndGameMenuOpen}
+                        />
+                        </Fade>
+                    }
+                </div>
                 <StreetView
                     apiKey={process.env.REACT_APP_MAPS_API_KEY!}
                     streetViewOptions={streetViewOptions}
