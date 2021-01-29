@@ -8,7 +8,8 @@ import User from './User/User';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex'
+        display: 'flex',
+        justifyContent: 'center'
     },
     introButtons: {
         marginLeft: theme.spacing(1),

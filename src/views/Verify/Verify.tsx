@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Button,
+    CircularProgress,
     FormControl,
     FormHelperText,
     IconButton,
@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserToken } from '../api/HTTPRequests';
+import { getUserToken, register } from '../api/HTTPRequests';
 import { useHistory, useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
         "font-size": "4.7rem",
         "text-align": "center",
         marginBottom: theme.spacing(8)
+    },
+    item: {
+        margin: theme.spacing(0, 0, 2)
     }
 }));
 
@@ -46,6 +49,8 @@ function Intro() {
     const classes = useStyles();
     const query = new URLSearchParams(useLocation().search);
     const history = useHistory();
+
+    const [promptUsername, setPromptUsername] = useState(false);
 
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState(false);
@@ -69,15 +74,26 @@ function Intro() {
 
     const handleEnterUsername = () => {
         if (isValidUsername()) {
-            getUserToken(username, query.get("key")!);
+            register(username, query.get("key")!)
+            .then(data => {
+                history.push('/');
+            })
         }
     }
 
     useEffect(() => {
         // if theres no query key, then 
         if (!query.get("key")) {
-            history.push('/');
+            return history.push('/');
         }
+        getUserToken(query.get("key")!)
+        .then(data => {
+            if (data.registered) {
+                return history.push('/');
+            } else {
+                setPromptUsername(true);
+            }
+        })
     },[])
 
     return (
@@ -87,37 +103,51 @@ function Intro() {
             </div>
             <div className={classes.centered}>
                 <div className={classes.menuContainer}>
-                    <div>
-                        <Typography variant='subtitle1' align='center' color='textSecondary'>
-                            Enter your username:
-                        </Typography>
-                        <form noValidate autoComplete="off" onSubmit={(e) => {
-                            e.preventDefault();
-                            handleEnterUsername();
-                        }}>
-                            <FormControl error={usernameError}>
-                                <OutlinedInput
-                                    id="gameID"
-                                    type='text'
-                                    placeholder='Username'
-                                    value={username}
-                                    onChange={handleUsernameChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                            aria-label="submit login info"
-                                            edge="end"
-                                            onClick={handleEnterUsername}
-                                            >
-                                                <ArrowForward />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <FormHelperText id="username-error-text">{usernameErrorText}</FormHelperText>
-                            </FormControl>
-                        </form>
-                    </div>
+                    {!promptUsername &&
+                        <div>
+                            <div className={classes.centered}>
+                                <Typography className={classes.item} color='textSecondary'>
+                                    Verifying ...
+                                </Typography>
+                            </div>
+                            <div className={classes.centered}>
+                                <CircularProgress className={classes.item} />
+                            </div>
+                        </div>
+                    }
+                    {promptUsername &&
+                        <div>
+                            <Typography variant='subtitle1' align='center' color='textSecondary'>
+                                Create your username:
+                            </Typography>
+                            <form noValidate autoComplete="off" onSubmit={(e) => {
+                                e.preventDefault();
+                                handleEnterUsername();
+                            }}>
+                                <FormControl error={usernameError}>
+                                    <OutlinedInput
+                                        id="gameID"
+                                        type='text'
+                                        placeholder='Username'
+                                        value={username}
+                                        onChange={handleUsernameChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                aria-label="submit login info"
+                                                edge="end"
+                                                onClick={handleEnterUsername}
+                                                >
+                                                    <ArrowForward />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <FormHelperText id="username-error-text">{usernameErrorText}</FormHelperText>
+                                </FormControl>
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

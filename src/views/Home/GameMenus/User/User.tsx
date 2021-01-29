@@ -1,34 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Button, Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import jwt_decode from 'jwt-decode';
 import { JWTPayload, Role } from '../../../api/HTTPRequests';
 import SignIn from './SignIn';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-    },
-    introButtons: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        marginTop: theme.spacing(0),
-        marginBottom: theme.spacing(1)
-    },
-    centered: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-}));
-
-// interface UserProps {
-//     handleStateChange: (newState: MainMenuState) => void;
-// }
+import SignedIn from './SignedIn';
 
 function User() {
-    const classes = useStyles();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState("");
 
@@ -45,9 +21,9 @@ function User() {
 
     if (loggedIn) {
         return (
-            <Typography>
-                Signed in as {username}
-            </Typography>
+            <SignedIn
+                username={username}
+            />
         );
     } else {
         return (
