@@ -8,6 +8,10 @@ function User() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState("");
 
+    const handleLogOut = () => {
+        setLoggedIn(false);
+    }
+
     useEffect(() => {
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
         if (token) {
@@ -23,6 +27,7 @@ function User() {
         return (
             <SignedIn
                 username={username}
+                handleLogOut={handleLogOut}
             />
         );
     } else {

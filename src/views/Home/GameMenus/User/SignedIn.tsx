@@ -6,7 +6,6 @@ import {
     Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router';
 import { getUserInfo } from '../../../api/HTTPRequests';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
 
 interface SignedInProps {
     username: string;
+    handleLogOut: () => void;
 }
 
 function SignedIn(props: SignedInProps) {
     const classes = useStyles();
-    const history = useHistory();
     const [showUserInfo, setShowUserInfo] = useState(false);
 
     const [email, setEmail] = useState("");
@@ -49,7 +48,7 @@ function SignedIn(props: SignedInProps) {
 
     const logOut = () => {
         localStorage.removeItem(process.env.REACT_APP_TOKEN_NAME!)
-        history.push('/');
+        props.handleLogOut();
     }
 
     useEffect(() => {
