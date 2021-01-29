@@ -111,10 +111,10 @@ export interface MessageEventData {
 }
 
 // emit message data
-export const sendMessage = (messageText: string) => {
+export const sendMessage = (username:string, messageText: string) => {
     const messageData: MessageEventData = {
         text: messageText,
-        name: 'John',
+        name: username,
         timestamp: Date.now()
     };
     if (socket) socket.emit('message', messageData);

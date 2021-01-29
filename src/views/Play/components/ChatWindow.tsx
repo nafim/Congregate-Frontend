@@ -40,8 +40,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ChatWindowProps {
-    chatOpen: boolean
-    handleChatToggle: () => void
+    chatOpen: boolean;
+    username: string;
+    handleChatToggle: () => void;
 }
 
 function ChatWindow(props: ChatWindowProps) {
@@ -66,12 +67,12 @@ function ChatWindow(props: ChatWindowProps) {
         if (!messageText) return;
         const newMessage = {
             messageText,
-            name: "You",
+            name: props.username,
             sender: Sender.Me
             
         };
         setMessages(messages => [...messages, newMessage]);
-        sendMessage(messageText);
+        sendMessage(props.username, messageText);
     }
 
     return (

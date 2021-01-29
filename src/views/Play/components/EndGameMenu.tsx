@@ -87,9 +87,8 @@ const waitForGame = (data: GameStatusData) => {
                         </Typography>
                     </div>
                 </div>
-                <Divider className={classes.items} />
                 {waiting &&
-                    <div>
+                    <div className={classes.items}>
                         <div className={classes.centered}>
                             <Typography className={classes.items} color='textSecondary'>
                                 {loadingMessage} 

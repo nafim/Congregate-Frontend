@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface GameProps{
     position: GamePosition;
+    username: string;
 }
 
 function Game(props: GameProps) {
@@ -198,6 +199,7 @@ function Game(props: GameProps) {
                 </AppBar>
                 <ChatWindow
                     chatOpen={chatOpen}
+                    username={props.username}
                     handleChatToggle={handleChatToggle}
                 />
             </div>

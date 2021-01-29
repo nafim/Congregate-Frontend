@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 import {
     initiateSocket,
     sendPlayerReady,
@@ -9,7 +10,7 @@ import {
     GameUpdateData,
     requestGameStatus,
 } from '../api/GameSocket';
-import { getAnonymousToken } from '../api/HTTPRequests';
+import { getAnonymousToken, JWTPayload } from '../api/HTTPRequests';
 import {
     useParams,
     useHistory,
@@ -30,6 +31,7 @@ function Play() {
     const [ready, setReady] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("Waiting for other player...");
     const [initialPosition, setInitialPosition] = useState({lat: 42.345573, lng: -71.098326});
+    const [username, setUsername] = useState('');
 
     // logic for connecting to the game
     useEffect(() => {
@@ -38,10 +40,14 @@ function Play() {
         // get a token if one doesn't already exist, then connect to socket
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
         if (token) {
+            const decoded = jwt_decode<JWTPayload>(token);
+            setUsername(decoded.name);
             initiateSocket(token, gameID, afterSocketConnect);
         } else {
             getAnonymousToken()
             .then( data => {
+                const decoded = jwt_decode<JWTPayload>(data.token);
+                setUsername(decoded.name);
                 initiateSocket(data.token, gameID, afterSocketConnect);
             })
         }
@@ -77,6 +83,7 @@ function Play() {
         return (
             <Game
                 position={initialPosition}
+                username={username}
             />
         );
     } else {
