@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import {
     Button,
     Divider,
+    IconButton,
     Link,
     Typography
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserInfo } from '../../../api/HTTPRequests';
+import Username from './Username';
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -93,14 +96,9 @@ function SignedIn(props: SignedInProps) {
                 <div className={classes.centered}>
                     <div className={classes.outline}>
                         <div>
-                            <Typography 
-                                className={classes.userInfoTitle} 
-                                variant='h6' 
-                                align='center' 
-                                color='textSecondary'
-                            >
-                                {props.username}
-                            </Typography>
+                            <Username
+                                username={props.username}
+                            />
                             <Divider className={classes.item} />
                             <div className={classes.centered}>
                                 <div className={classes.item}>
