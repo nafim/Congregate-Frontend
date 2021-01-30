@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserToken, register } from '../api/HTTPRequests';
+import { getUserToken, register } from '../../api/HTTPRequests';
 import { useHistory, useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({

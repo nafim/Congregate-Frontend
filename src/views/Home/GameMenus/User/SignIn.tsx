@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
-import { sendLoginEmail } from '../../../api/HTTPRequests';
+import { sendLoginEmail } from '../../../../api/HTTPRequests';
 
 const useStyles = makeStyles((theme) => ({
     root: {

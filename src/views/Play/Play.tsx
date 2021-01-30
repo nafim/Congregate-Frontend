@@ -9,8 +9,8 @@ import {
     subscribeToInitialPosition,
     GameUpdateData,
     requestGameStatus,
-} from '../api/GameSocket';
-import { getAnonymousToken, JWTPayload } from '../api/HTTPRequests';
+} from '../../api/GameSocket';
+import { getAnonymousToken, JWTPayload } from '../../api/HTTPRequests';
 import {
     useParams,
     useHistory,

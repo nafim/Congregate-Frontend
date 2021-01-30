@@ -4,7 +4,7 @@ import {
     GameStatusData,
     sendPlayerReady, 
     subscribeToGameStatus,
-} from '../../api/GameSocket';
+} from '../../../api/GameSocket';
 import {
     Button,
     Card,

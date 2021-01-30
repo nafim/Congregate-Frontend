@@ -5,13 +5,13 @@ import {
     disconnectSocket,
     subscribeToMatchSuccess,
     MatchSuccessData,
-} from '../../api/GameSocket';
+} from '../../../api/GameSocket';
 import {
     Button,
     CircularProgress,
     Typography,
 } from '@material-ui/core';
-import { getAnonymousToken } from '../../api/HTTPRequests';
+import { getAnonymousToken } from '../../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
 

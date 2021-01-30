@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import MessageBox, { Message, Sender } from './MessageBox';
 import ChatInput from './ChatInput';
-import { MessageEventData, sendMessage, subscribeToMessage } from '../../api/GameSocket';
+import { MessageEventData, sendMessage, subscribeToMessage } from '../../../api/GameSocket';
 
 const drawerWidth = 350;
 

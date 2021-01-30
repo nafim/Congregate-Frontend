@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
-import { disconnectSocket } from '../api/GameSocket';
+import { disconnectSocket } from '../../api/GameSocket';
 
 const useStyles = makeStyles((theme) => ({
     root: {

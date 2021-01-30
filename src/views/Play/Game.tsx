@@ -16,7 +16,7 @@ import {
     GamePosition,
     GameUpdateData,
     sendGameUpdate,
-} from '../api/GameSocket';
+} from '../../api/GameSocket';
 import { useHistory } from "react-router-dom";
 import ChatIcon from '@material-ui/icons/Chat';
 import { makeStyles } from '@material-ui/core/styles';

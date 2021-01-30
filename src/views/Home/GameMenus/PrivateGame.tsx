@@ -6,7 +6,7 @@ import {
     Link,
     Typography,
 } from '@material-ui/core';
-import { getGameID } from '../../api/HTTPRequests';
+import { getGameID } from '../../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
 
