@@ -4,7 +4,6 @@ export const getGameID = () => {
     return (
         fetch(process.env.REACT_APP_API_BACKEND + '/api/getUniqueGameID')
         .then(res => res.json())
-        .catch(err => console.error(err))
     );
 }
 
@@ -17,7 +16,6 @@ export const getAnonymousToken = () => {
             localStorage.setItem(process.env.REACT_APP_TOKEN_NAME!, data.token);
             return data;
         })
-        .catch(err => console.error(err))
     );
 }
 
@@ -32,7 +30,6 @@ export const getUserToken = (key: string) => {
             }
             return data;
         })
-        .catch(err => console.error(err))
     );
 }
 
@@ -47,7 +44,6 @@ export const register = (username: string, key: string) => {
             }
             return data;
         })
-        .catch(err => console.error(err))
     );
 }
 
@@ -62,7 +58,6 @@ export const getUserInfo = () => {
             }
         })
         .then(res => res.json())
-        .catch(err => console.error(err))
     );
 }
 

@@ -38,6 +38,7 @@ function LandingMenu(props: LandingMenuProps) {
                 className={classes.introButtons} 
                 variant="contained" 
                 color="primary"
+                size='large'
                 onClick={e => props.handleStateChange(MainMenuState.RandomGame)}
                 >
                     Random Game
@@ -47,6 +48,7 @@ function LandingMenu(props: LandingMenuProps) {
                     className={classes.introButtons} 
                     variant="contained" 
                     color="primary"
+                    size='large'
                     onClick={e => props.handleStateChange(MainMenuState.PrivateGame)}
                     >
                         Private Game

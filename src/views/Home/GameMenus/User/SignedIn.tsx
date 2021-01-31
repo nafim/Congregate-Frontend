@@ -62,6 +62,7 @@ function SignedIn(props: SignedInProps) {
             setAvgScore(data.avgScore.toFixed(1));
             setMaxScore(data.maxScore.toFixed(0));
         })
+        .catch(err => {})
     },[])
 
     return(

@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import StreetView from './components/StreetView';
 import ChatWindow from './components/ChatWindow';
 import EndGameMenu from './components/EndGameMenu';
-import game_settings from '../../game_settings';
+import constants from '../../constants';
 
 const drawerWidth = 350;
 
@@ -85,7 +85,7 @@ function Game(props: GameProps) {
     const [chatOpen, setChatOpen] = useState(false);
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
-    const [timeRemaining, setTimeRemaining] = useState(game_settings.ROUND_TIMER);
+    const [timeRemaining, setTimeRemaining] = useState(constants.ROUND_TIMER);
     const [prevScore, setPrevScore] = useState(0);
     const [score, setScore] = useState(0);
     const [gameDuration, setGameDuration] = useState(0);
@@ -145,13 +145,13 @@ function Game(props: GameProps) {
             setEndGameMessage("You Won!");
             setEndGameMenuOpen(true);
             // calculate game duration
-            setGameDuration(game_settings.ROUND_TIMER - gameStatusData.timeRemaining);
+            setGameDuration(constants.ROUND_TIMER - gameStatusData.timeRemaining);
         }
         if (gameStatusData.status === GameStatus.Loss) {
             setEndGameMessage("Time's Up!");
             setEndGameMenuOpen(true);
             // calculate game duration
-            setGameDuration(game_settings.ROUND_TIMER - gameStatusData.timeRemaining);
+            setGameDuration(constants.ROUND_TIMER - gameStatusData.timeRemaining);
         }
         // synchornize the time remaining
         if (Math.abs(gameStatusData.timeRemaining - timeRemaining) > 1 ){

@@ -11,6 +11,8 @@ import {
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
 import { sendLoginEmail } from '../../../../api/HTTPRequests';
+import { useSnackbar } from 'notistack';
+import constants from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
+
     const [signIn, setSignIn] = useState(false);
 
     const [email, setEmail] = useState("");
@@ -49,7 +53,7 @@ function SignIn() {
     const isValidEmail = () => {
         if (!email) {
             setEmailError(true);
-            setEmailErrorText("Please enter a valid email")
+            setEmailErrorText("Invalid email")
             return false;
         } else {
             return true;
@@ -61,11 +65,32 @@ function SignIn() {
             sendLoginEmail(email)
             .then(data => {
                 if (data.success) {
-                    console.log(data.success);
+                    enqueueSnackbar("A verification email has been sent to your address", { 
+                        variant: 'success',
+                    })
                     setSignIn(false);
                     setEmail("");
                 }
-                if (data.error) console.error(data.error);
+                if (data.error) {
+                    if (data.error === 'Invalid email') {
+                        setEmailError(true);
+                        setEmailErrorText(data.error);
+                    }
+                    else {
+                        setSignIn(false);
+                        setEmail("");
+                        enqueueSnackbar(data.error, { 
+                            variant: 'error',
+                        })
+                    }
+                };
+            })
+            .catch(error => {
+                setSignIn(false);
+                setEmail("");
+                enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                    variant: 'error',
+                })
             })
             ;
         }

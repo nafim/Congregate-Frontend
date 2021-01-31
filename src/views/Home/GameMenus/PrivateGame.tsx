@@ -9,6 +9,8 @@ import {
 import { getGameID } from '../../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
+import { useSnackbar } from 'notistack';
+import constants from '../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     instructions: {
@@ -37,6 +39,8 @@ interface PrivateGameProps {
 
 function PrivateGame(props: PrivateGameProps) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
+
     const [gameID, setGameID] = useState("");
 
     const handleCancel = () => {
@@ -46,10 +50,20 @@ function PrivateGame(props: PrivateGameProps) {
     const fetchGameID = () => {
         getGameID()
         .then(data => {
-            if (data.error) throw Error(data.error);
-            setGameID(data.gameID);
+            if (data.error) {
+                enqueueSnackbar(data.error, { 
+                    variant: 'error',
+                })
+            }
+            if (data.gameID) {
+                setGameID(data.gameID);
+            }
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                variant: 'error',
+            })
+        })
     }
 
     useEffect(() => {

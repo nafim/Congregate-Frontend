@@ -12,6 +12,8 @@ import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserToken, register } from '../../api/HTTPRequests';
 import { useHistory, useLocation } from 'react-router';
+import { useSnackbar } from 'notistack';
+import constants from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
     heroContent: {
@@ -49,6 +51,7 @@ function Intro() {
     const classes = useStyles();
     const query = new URLSearchParams(useLocation().search);
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [promptUsername, setPromptUsername] = useState(false);
 
@@ -76,7 +79,17 @@ function Intro() {
         if (isValidUsername()) {
             register(username, query.get("key")!)
             .then(data => {
+                if (data.error) {
+                    enqueueSnackbar(data.error, { 
+                        variant: 'error',
+                    })
+                }
                 history.push('/');
+            })
+            .catch(err => {
+                enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                    variant: 'error',
+                })
             })
         }
     }
@@ -88,11 +101,21 @@ function Intro() {
         }
         getUserToken(query.get("key")!)
         .then(data => {
+            if (data.error) {
+                enqueueSnackbar(data.error, { 
+                    variant: 'error',
+                })
+            }
             if (data.registered) {
                 return history.push('/');
             } else {
                 setPromptUsername(true);
             }
+        })
+        .catch(err => {
+            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                variant: 'error',
+            })
         })
     },[])
 

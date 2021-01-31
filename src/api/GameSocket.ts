@@ -1,7 +1,10 @@
 import io from 'socket.io-client';
 let socket: SocketIOClient.Socket;
 
-// Initiate socket connection
+//////////////////////////////////////////////////////
+///////////////// Socket Connection //////////////////
+//////////////////////////////////////////////////////
+
 export const initiateSocket = (authToken: string, gameID?: string, cb?: () => void) => {
     socket = io(process.env.REACT_APP_API_BACKEND!, {
         query: gameID ? { gameID } : undefined,
@@ -126,5 +129,29 @@ export const subscribeToMessage = (cb: (data: MessageEventData) => void) => {
     socket.on('message', cb);
     return true;
 }
+
+//////////////////////////////////////////////////////
+/////////////////// Error Handling ///////////////////
+//////////////////////////////////////////////////////
+
+
+export interface ErrorData {
+    message: string,
+}
+
+  // Subscribe to socket middleware (ex: authentication) errors
+export const subscribeToConnectErrors = (cb: (data: ErrorData) => void) => {
+    if (!socket) return false;
+    // handle authentication error
+    socket.on('connect_error', cb)
+}
+
+  // Subscribe to socket connection errors
+export const subscribeToErrors = (cb: (error: Error) => void) => {
+    if (!socket) return false;
+    // handle connection errors
+    socket.on('error', cb)
+}
+
 
 
