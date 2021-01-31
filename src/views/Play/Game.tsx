@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import clsx from 'clsx';
 import {
     AppBar,
+    Badge,
     Button,
     Fade,
     IconButton,
@@ -83,15 +84,24 @@ function Game(props: GameProps) {
     const history = useHistory();
 
     const [chatOpen, setChatOpen] = useState(false);
+    const [chatUnreadNumber, setChatUnreadNumber] = useState(0);
+
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
+
     const [timeRemaining, setTimeRemaining] = useState(constants.ROUND_TIMER);
+    const [gameDuration, setGameDuration] = useState(0);
+
     const [prevScore, setPrevScore] = useState(0);
     const [score, setScore] = useState(0);
-    const [gameDuration, setGameDuration] = useState(0);
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
+        setChatUnreadNumber(0);
+    }
+
+    const incrementChatUnread = () => {
+        setChatUnreadNumber(chatUnreadNumber => chatUnreadNumber + 1);
     }
 
     const handleExit = () => {
@@ -190,17 +200,21 @@ function Game(props: GameProps) {
                         >
                             Exit
                         </Button>
+                        {!chatOpen && 
                         <IconButton edge="start" className={classes.chatButton} color="inherit" aria-label="chat"
                             onClick={handleChatToggle}
                         >
-                            <ChatIcon />
-                        </IconButton>
+                            <Badge color="secondary" badgeContent={chatUnreadNumber} max={9}>
+                                <ChatIcon />
+                            </Badge>
+                        </IconButton>}
                     </Toolbar>
                 </AppBar>
                 <ChatWindow
                     chatOpen={chatOpen}
                     username={props.username}
                     handleChatToggle={handleChatToggle}
+                    incrementChatUnread={incrementChatUnread}
                 />
             </div>
             <div className={classes.content}>

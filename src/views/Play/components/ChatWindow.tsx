@@ -43,6 +43,7 @@ interface ChatWindowProps {
     chatOpen: boolean;
     username: string;
     handleChatToggle: () => void;
+    incrementChatUnread: () => void;
 }
 
 function ChatWindow(props: ChatWindowProps) {
@@ -61,6 +62,7 @@ function ChatWindow(props: ChatWindowProps) {
             sender: Sender.Other
         };
         setMessages(messages => [...messages, newMessage]);
+        props.incrementChatUnread();
     }
 
     const addMessage = (messageText: string) => {

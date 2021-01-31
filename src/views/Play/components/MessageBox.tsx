@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 export enum Sender {
     Other='other',
-    Me='me'
+    Me='me',
+    Alert='alert'
 }
 
 function MessageRow({index, data, style}: ListChildComponentProps) {
@@ -51,7 +52,29 @@ function MessageRow({index, data, style}: ListChildComponentProps) {
         // eslint-disable-next-line
         }, [rowRef]);
 
-    return (
+    if (message.sender === Sender.Alert) {
+        return (
+            <div style={style}>
+                <div ref={rowRef} 
+                className={classes.messageContainer} 
+                style={{alignItems: "center"}}
+                >
+                    <div 
+                        className={classes.messageContent}
+                    >
+                        <Typography
+                            variant='caption'
+                            color='textSecondary'
+                            align='center'
+                        > 
+                            {message.messageText}
+                        </Typography>
+                    </div>
+                </div>
+            </div>
+        )
+    } else {
+        return (
             <div style={style}>
                 <div ref={rowRef} 
                 className={classes.messageContainer} 
@@ -70,7 +93,8 @@ function MessageRow({index, data, style}: ListChildComponentProps) {
                     </div>
                 </div>
             </div>
-    )
+        )
+    }
 }
 
 export interface Message {
