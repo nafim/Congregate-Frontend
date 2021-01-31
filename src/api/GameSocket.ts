@@ -34,6 +34,32 @@ export const disconnectSocket = () => {
     if (socket) socket.disconnect();
 }
 
+export interface PlayerConnectionData {
+    player: string // player username
+}
+
+// event emitted when another player connects to the game
+export const subscribeToPlayerConnect = (cb: (data: PlayerConnectionData) => void, once?: boolean) => {
+    if (!socket) return false;
+    if (once) {
+        socket.once('playerConnected', cb);
+    } else {
+        socket.on('playerConnected', cb);
+    }
+    return true;
+}
+
+// event emitted when another player connects to the game
+export const subscribeToPlayerDisconnect = (cb: (data: PlayerConnectionData) => void, once?: boolean) => {
+    if (!socket) return false;
+    if (once) {
+        socket.once('playerDisconnected', cb);
+    } else {
+        socket.on('playerDisconnected', cb);
+    }
+    return true;
+}
+
 //////////////////////////////////////////////////////
 ///////////////// Game communication /////////////////
 //////////////////////////////////////////////////////
@@ -67,6 +93,10 @@ export interface MatchSuccessData {
     gameID: string
 }
 
+export interface CurrentPlayersData {
+    players: string[] // list of player usernames
+}
+
 // emit ready status
 export const sendPlayerReady = () => {
     if (socket) socket.emit('playerReady');
@@ -78,9 +108,13 @@ export const sendGameUpdate = (gameUpdateData: GameUpdateData) => {
 }
 
 // on game start an initial position will be given
-export const subscribeToInitialPosition = (cb: (data: GameUpdateData) => void) => {
+export const subscribeToInitialPosition = (cb: (data: GameUpdateData) => void, once?: boolean) => {
     if (!socket) return false;
-    socket.on('initialPosition', cb);
+    if (once) {
+        socket.once('initialPosition', cb);
+    } else {
+        socket.on('initialPosition', cb);
+    }
     return true;
 }
 
@@ -90,15 +124,40 @@ export const requestGameStatus = () => {
 }
 
 // Subscribe to game status updates
-export const subscribeToGameStatus = (cb: (data: GameStatusData) => void) => {
+export const subscribeToGameStatus = (cb: (data: GameStatusData) => void, once?: boolean) => {
     if (!socket) return false;
-    socket.on('gameStatus', cb);
+    if (once) {
+        socket.once('gameStatus', cb);
+    } else {
+        socket.on('gameStatus', cb);
+    }
     return true;
 }
 
-export const subscribeToMatchSuccess = (cb: (data: MatchSuccessData) => void) => {
+// Subscribe to successful random matching event
+export const subscribeToMatchSuccess = (cb: (data: MatchSuccessData) => void, once?: boolean) => {
     if (!socket) return false;
-    socket.on('matchSuccess', cb);
+    if (once) {
+        socket.once('matchSuccess', cb);
+    } else {
+        socket.on('matchSuccess', cb);
+    }
+    return true;
+}
+
+// request a current players in the game
+export const requestCurrentPlayers = () => {
+    if (socket) socket.emit(`currentPlayers`);
+}
+
+// Subscribe to current players in the game event
+export const subscribeToCurrentPlayers = (cb: (data: CurrentPlayersData) => void, once?: boolean) => {
+    if (!socket) return false;
+    if (once) {
+        socket.once('currentPlayers', cb);
+    } else {
+        socket.on('currentPlayers', cb);
+    }
     return true;
 }
 
@@ -124,9 +183,13 @@ export const sendMessage = (username:string, messageText: string) => {
 }
 
 // receiving messages from other userss
-export const subscribeToMessage = (cb: (data: MessageEventData) => void) => {
+export const subscribeToMessage = (cb: (data: MessageEventData) => void, once?: boolean) => {
     if (!socket) return false;
-    socket.on('message', cb);
+    if (once) {
+        socket.once('message', cb);
+    } else {
+        socket.on('message', cb);
+    }
     return true;
 }
 
@@ -140,17 +203,25 @@ export interface ErrorData {
 }
 
   // Subscribe to socket middleware (ex: authentication) errors
-export const subscribeToConnectErrors = (cb: (data: ErrorData) => void) => {
+export const subscribeToConnectErrors = (cb: (data: ErrorData) => void, once?: boolean) => {
     if (!socket) return false;
     // handle authentication error
-    socket.on('connect_error', cb)
+    if (once) {
+        socket.once('connect_error', cb);
+    } else {
+        socket.on('connect_error', cb);
+    }
 }
 
   // Subscribe to socket connection errors
-export const subscribeToErrors = (cb: (error: Error) => void) => {
+export const subscribeToErrors = (cb: (error: Error) => void, once?: boolean) => {
     if (!socket) return false;
     // handle connection errors
-    socket.on('error', cb)
+    if (once) {
+        socket.once('error', cb);
+    } else {
+        socket.on('error', cb);
+    }
 }
 
 

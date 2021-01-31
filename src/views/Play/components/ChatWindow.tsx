@@ -8,7 +8,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import MessageBox, { Message, Sender } from './MessageBox';
 import ChatInput from './ChatInput';
-import { MessageEventData, sendMessage, subscribeToMessage } from '../../../api/GameSocket';
+import {
+    CurrentPlayersData,
+    MessageEventData,
+    PlayerConnectionData,
+    requestCurrentPlayers,
+    sendMessage,
+    subscribeToCurrentPlayers,
+    subscribeToMessage,
+    subscribeToPlayerConnect,
+    subscribeToPlayerDisconnect
+} from '../../../api/GameSocket';
 
 const drawerWidth = 350;
 
@@ -53,6 +63,10 @@ function ChatWindow(props: ChatWindowProps) {
 
     useEffect(() => {
         subscribeToMessage(receiveMessage);
+        subscribeToCurrentPlayers(showCurrentPlayers, true);
+        requestCurrentPlayers();
+        subscribeToPlayerConnect(otherPlayerConnect);
+        subscribeToPlayerDisconnect(otherPlayerDisconnect);
     },[])
 
     const receiveMessage = (messageData: MessageEventData) => {
@@ -62,6 +76,37 @@ function ChatWindow(props: ChatWindowProps) {
             sender: Sender.Other
         };
         setMessages(messages => [...messages, newMessage]);
+        props.incrementChatUnread();
+    }
+
+    const showCurrentPlayers = (currentPlayers: CurrentPlayersData) => {
+        const otherPlayers = currentPlayers.players.filter(name => name !== props.username).join(', ');
+        const newAlert = {
+            messageText: `You are in a game with ${otherPlayers}`,
+            name: '',
+            sender: Sender.Alert
+        };
+        setMessages(messages => [...messages, newAlert]);
+        props.incrementChatUnread();
+    }
+
+    const otherPlayerConnect = (connectionData: PlayerConnectionData) => {
+        const newAlert = {
+            messageText: `${connectionData.player} has connected`,
+            name: '',
+            sender: Sender.Alert
+        };
+        setMessages(messages => [...messages, newAlert]);
+        props.incrementChatUnread();
+    }
+
+    const otherPlayerDisconnect = (connectionData: PlayerConnectionData) => {
+        const newAlert = {
+            messageText: `${connectionData.player} has disconnected`,
+            name: '',
+            sender: Sender.Alert
+        };
+        setMessages(messages => [...messages, newAlert]);
         props.incrementChatUnread();
     }
 

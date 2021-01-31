@@ -109,9 +109,8 @@ function Intro() {
         getUserToken(query.get("key")!)
         .then(data => {
             if (data.error) {
-                enqueueSnackbar(data.error, { 
-                    variant: 'error',
-                })
+                // if there is an error it has to be invalid key, so just reroute home
+                return history.push('/');
             }
             if (data.registered) {
                 return history.push('/');
