@@ -38,7 +38,7 @@ export const register = (username: string, key: string) => {
         fetch(process.env.REACT_APP_API_BACKEND + `/api/user/token?key=${key}&username=${username}`)
         .then(res => res.json())
         .then(data => {
-            if (data.error) return data;
+            if (data.errors.length > 0) return data;
             if (data.token) {
                 localStorage.setItem(process.env.REACT_APP_TOKEN_NAME!, data.token);
             }

@@ -59,7 +59,9 @@ function SignedIn(props: SignedInProps) {
         .then(data => {
             setEmail(data.email);
             setTotalGamesPlayed(data.totalGamesPlayed);
+            // average score to the 1st decimal place
             setAvgScore(data.avgScore.toFixed(1));
+            // max score to the nearest integer
             setMaxScore(data.maxScore.toFixed(0));
         })
         .catch(err => {})

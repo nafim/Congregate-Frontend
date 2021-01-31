@@ -69,17 +69,24 @@ function SignIn() {
                         variant: 'success',
                     })
                     setSignIn(false);
-                    setEmail("");
+                    return setEmail("");
                 }
-                if (data.error) {
-                    if (data.error === 'Invalid email') {
+                if (data.errors.length > 0) {
+                    const error = data.errors[0];
+                    // if problem is in the email
+                    if (error.param === 'email') {
                         setEmailError(true);
-                        setEmailErrorText(data.error);
-                    }
-                    else {
+                        setEmailErrorText(error.msg);
+                    // if problem is rate-limiting
+                    } else if (error.param === 'rate-limit') {
                         setSignIn(false);
                         setEmail("");
-                        enqueueSnackbar(data.error, { 
+                        enqueueSnackbar(error.msg, { 
+                            variant: 'error',
+                        })
+                    // if problem is something else
+                    } else {
+                        enqueueSnackbar(constants.ERROR_MESSAGE, { 
                             variant: 'error',
                         })
                     }

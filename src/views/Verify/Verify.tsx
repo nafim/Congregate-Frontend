@@ -68,7 +68,7 @@ function Intro() {
     const isValidUsername = () => {
         if (!username) {
             setUsernameError(true);
-            setUsernameErrorText("Please enter a valid Username")
+            setUsernameErrorText("Please enter a username")
             return false;
         } else {
             return true;
@@ -79,12 +79,19 @@ function Intro() {
         if (isValidUsername()) {
             register(username, query.get("key")!)
             .then(data => {
-                if (data.error) {
-                    enqueueSnackbar(data.error, { 
-                        variant: 'error',
-                    })
+                if (data.errors.length > 0) {
+                    const error = data.errors[0];
+                    if (error.param === 'username') {
+                        setUsernameError(true);
+                        setUsernameErrorText(error.msg);
+                    } else {
+                        enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                            variant: 'error',
+                        })
+                    }
+                } else {
+                    history.push('/');
                 }
-                history.push('/');
             })
             .catch(err => {
                 enqueueSnackbar(constants.ERROR_MESSAGE, { 
