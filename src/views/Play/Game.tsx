@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import clsx from 'clsx';
 import {
     AppBar,
@@ -15,7 +15,6 @@ import {
     GameStatusData,
     GameStatus,
     GamePosition,
-    GameUpdateData,
     sendGameUpdate,
 } from '../../api/GameSocket';
 import { useHistory } from "react-router-dom";
@@ -94,6 +93,8 @@ function Game(props: GameProps) {
 
     const [prevScore, setPrevScore] = useState(0);
     const [score, setScore] = useState(0);
+    // set up state ref so async socket callback func can access latest state
+    const stateRef = useRef<{score: number, timeRemaining: number}>({score: 0, timeRemaining: 0});
 
     const handleChatToggle = () => {
         setChatOpen(!chatOpen);
@@ -119,8 +120,9 @@ function Game(props: GameProps) {
     }
 
     const showTimer = () => {
-        const minutes = Math.floor(timeRemaining/60);
-        let seconds = Math.floor(timeRemaining % 60);
+        const newTimeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
+        const minutes = Math.floor(newTimeRemaining/60);
+        let seconds = Math.floor(newTimeRemaining % 60);
         let secondString;
         if (seconds < 10) {
             secondString = "0" + seconds;
@@ -131,6 +133,7 @@ function Game(props: GameProps) {
         return (`${minutes}:${secondString}`);
     }
 
+    // set up interval to calculate the time remaining
     useEffect(() => {
         const interval = setInterval(() => {
             return setTimeRemaining(timeRemaining => {
@@ -144,6 +147,12 @@ function Game(props: GameProps) {
         return (() => clearInterval(interval))
     }, [])
 
+    // set up state ref with latest state values
+    useEffect(() => {
+        stateRef.current = { timeRemaining, score };
+    },[timeRemaining, score])
+
+    // subscribe to game status changes
     useEffect(() => {
         subscribeToGameStatus(handleGameStatus);
     },[])
@@ -160,17 +169,20 @@ function Game(props: GameProps) {
         if (gameStatusData.status === GameStatus.Loss) {
             setEndGameMessage("Time's Up!");
             setEndGameMenuOpen(true);
+            // previous score is same current score
+            setPrevScore(stateRef.current.score);
             // calculate game duration
             setGameDuration(constants.ROUND_TIMER - gameStatusData.timeRemaining);
         }
         // synchornize the time remaining
-        if (Math.abs(gameStatusData.timeRemaining - timeRemaining) > 1 ){
+        if (Math.abs(gameStatusData.timeRemaining - stateRef.current.timeRemaining) > 1 ){
             console.log('resyncrhonize time');
             setTimeRemaining(gameStatusData.timeRemaining);
         }
         // set the score
-        if (gameStatusData.score !== score) {
-            setPrevScore(score);
+        if (gameStatusData.score !== stateRef.current.score) {
+            console.log('score changed')
+            setPrevScore(stateRef.current.score);
             setScore(gameStatusData.score);
         }
     }
