@@ -11,9 +11,11 @@ import {
     CircularProgress,
     Typography,
 } from '@material-ui/core';
-import { getAnonymousToken } from '../../../api/HTTPRequests';
+import { grabAndVerifyToken } from '../../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
+import { useSnackbar } from 'notistack';
+import constants from '../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     instructions: {
@@ -43,6 +45,7 @@ interface RandomGameProps {
 function RandomGame(props: RandomGameProps) {
     const classes = useStyles();
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleCancel = () => {
         disconnectSocket();
@@ -55,15 +58,15 @@ function RandomGame(props: RandomGameProps) {
 
     const fetchGameID = () => {
         // check if token exists, then make socket connection
-        const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
-        if (token) {
+        grabAndVerifyToken()
+        .then(token => {
             initiateSocket(token, undefined, afterSocketConnect);
-        } else {
-            getAnonymousToken()
-            .then( data => {
-                initiateSocket(data.token, undefined, afterSocketConnect);
+        })
+        .catch(error => {
+            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                variant: 'error',
             })
-        }
+        })
     }
 
     const afterSocketConnect = () => {

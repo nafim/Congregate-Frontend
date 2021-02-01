@@ -10,13 +10,15 @@ import {
     GameUpdateData,
     requestGameStatus,
 } from '../../api/GameSocket';
-import { getAnonymousToken, JWTPayload } from '../../api/HTTPRequests';
+import { grabAndVerifyToken, JWTPayload } from '../../api/HTTPRequests';
 import {
     useParams,
     useHistory,
 } from "react-router-dom";
 import Game from './Game';
 import Loading from './Loading';
+import { useSnackbar } from 'notistack';
+import constants from '../../constants';
 
 interface PlayParams {
     gameID: string;
@@ -26,6 +28,7 @@ function Play() {
     const { gameID } = useParams<PlayParams>();
 
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
 
     // set the states
     const [ready, setReady] = useState(false);
@@ -38,19 +41,17 @@ function Play() {
         // if no gameID, then redirect home
         if (!gameID) return history.push('/');
         // get a token if one doesn't already exist, then connect to socket
-        const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
-        if (token) {
+        grabAndVerifyToken()
+        .then(token => {
             const decoded = jwt_decode<JWTPayload>(token);
             setUsername(decoded.name);
             initiateSocket(token, gameID, afterSocketConnect);
-        } else {
-            getAnonymousToken()
-            .then( data => {
-                const decoded = jwt_decode<JWTPayload>(data.token);
-                setUsername(decoded.name);
-                initiateSocket(data.token, gameID, afterSocketConnect);
+        })
+        .catch(error => {
+            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                variant: 'error',
             })
-        }
+        })
     }, [])
 
     const afterSocketConnect = () => {

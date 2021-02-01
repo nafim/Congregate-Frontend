@@ -24,7 +24,7 @@ function User() {
             if (decoded.role !== Role.Anonymous) {
                 // check existing token is expired or not within margin of secondsBeforeExpire
                 const now = Date.now().valueOf() / 1000;
-                const secondsBeforeExpire = 30;
+                const secondsBeforeExpire = 1800;
                 if (decoded.exp - now > secondsBeforeExpire) {
                     setLoggedIn(true);
                     setUsername(decoded.name);
