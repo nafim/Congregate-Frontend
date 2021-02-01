@@ -58,6 +58,28 @@ export const getUserInfo = () => {
             }
         })
         .then(res => res.json())
+        .then(data => {
+            if (data.error) return data;
+            if (data.token) localStorage.setItem(process.env.REACT_APP_TOKEN_NAME!, data.token);
+            return data;
+        })
+    );
+}
+
+export const postChangeUsername = (newUsername: string) => {
+    const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
+    return (
+        fetch(process.env.REACT_APP_API_BACKEND + `/api/user/userInfo`, {
+            method: "POST",
+            headers: {
+            "Content-Type": 'application/json', 
+            'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify ({
+                username: newUsername
+            }),
+        })
+        .then(res => res.json())
     );
 }
 
@@ -89,4 +111,5 @@ export interface JWTPayload {
     role: Role;
     iat: number;
     aud: string;
+    exp: number;
 }

@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
     Button,
     Divider,
-    IconButton,
     Link,
     Typography
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserInfo } from '../../../../api/HTTPRequests';
 import Username from './Username';
@@ -38,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 interface SignedInProps {
     username: string;
     handleLogOut: () => void;
+    handleChangeUsername: (newUsername: string) => void;
 }
 
 function SignedIn(props: SignedInProps) {
@@ -55,6 +54,7 @@ function SignedIn(props: SignedInProps) {
     }
 
     useEffect(() => {
+        // getUserInfo also refreshes the token, so needs to be called after username change
         getUserInfo()
         .then(data => {
             setEmail(data.email);
@@ -65,7 +65,7 @@ function SignedIn(props: SignedInProps) {
             setMaxScore(data.maxScore.toFixed(0));
         })
         .catch(err => {})
-    },[])
+    },[props.username])
 
     return(
         <div>
@@ -101,6 +101,7 @@ function SignedIn(props: SignedInProps) {
                         <div>
                             <Username
                                 username={props.username}
+                                handleChangeUsername={props.handleChangeUsername}
                             />
                             <Divider className={classes.item} />
                             <div className={classes.centered}>

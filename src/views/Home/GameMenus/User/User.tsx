@@ -12,13 +12,23 @@ function User() {
         setLoggedIn(false);
     }
 
+    const handleChangeUsername = (newUsername: string) => {
+        setUsername(newUsername);
+    }
+
     useEffect(() => {
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
+        // decide whether user is logged in based on token
         if (token) {
             const decoded = jwt_decode<JWTPayload>(token);
             if (decoded.role !== Role.Anonymous) {
-                setLoggedIn(true);
-                setUsername(decoded.name);
+                // check existing token is expired or not within margin of secondsBeforeExpire
+                const now = Date.now().valueOf() / 1000;
+                const secondsBeforeExpire = 30;
+                if (decoded.exp - now > secondsBeforeExpire) {
+                    setLoggedIn(true);
+                    setUsername(decoded.name);
+                }
             }
         }
     },[])
@@ -28,6 +38,7 @@ function User() {
             <SignedIn
                 username={username}
                 handleLogOut={handleLogOut}
+                handleChangeUsername={handleChangeUsername}
             />
         );
     } else {

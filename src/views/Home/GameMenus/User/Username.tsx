@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     FormControl,
     FormHelperText,
@@ -10,6 +10,9 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForward from '@material-ui/icons/ArrowForward';
+import { postChangeUsername } from '../../../../api/HTTPRequests';
+import { useSnackbar } from 'notistack';
+import constants from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -40,10 +43,12 @@ const useStyles = makeStyles((theme) => ({
 
 interface UsernameProps {
     username: string;
+    handleChangeUsername: (newUsername: string) => void;
 }
 
 function Username(props: UsernameProps) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const [changeUsername, setChangeUsername] = useState(false);
 
     const [newUsername, setNewUsername] = useState(props.username);
@@ -51,9 +56,51 @@ function Username(props: UsernameProps) {
     const [usernameErrorText, setUsernameErrorText] = useState("");
 
     const handleEnterUsername = () => {
-        setChangeUsername(false);
+        if (isValidUsername() && newUsername !== props.username){
+            postChangeUsername(newUsername)
+            .then(data => {
+                // if error, then show error on the username field
+                if (data.error) {
+                    console.log(data);
+                    setUsernameError(true);
+                    setUsernameErrorText(data.error);
+                // if success, close username field, update username
+                } else {
+                    props.handleChangeUsername(newUsername);
+                    setChangeUsername(false);
+                }
+            })
+            .catch(err => {
+                // if big error, then show error on snackbar, close username field
+                setChangeUsername(false);
+                setNewUsername(props.username);
+                enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                    variant: 'error',
+                })
+            })
+        } else {
+            handleCancelChange();
+        }
     }
     
+    const isValidUsername = () => {
+        if (!newUsername) {
+            setUsernameError(true);
+            setUsernameErrorText("Please enter a username")
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    const handleCancelChange = () => {
+        setUsernameError(false);
+        setUsernameErrorText("");
+        setNewUsername(props.username);
+        setChangeUsername(false);
+
+    }
+
     const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewUsername(event.target.value);
         setUsernameError(false);
@@ -92,6 +139,12 @@ function Username(props: UsernameProps) {
                                 value={newUsername}
                                 size="small"
                                 onChange={handleFormChange}
+                                onKeyDown={(evt) => {
+                                    if (evt.key === 'Escape') {
+                                        evt.preventDefault();
+                                        handleCancelChange();
+                                    }
+                                }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
