@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Link as RouterLink} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import {
+    initiateSocket,
+    disconnectSocket,
+    subscribeToMatchSuccess,
+    MatchSuccessData,
+} from '../../../../api/GameSocket';
 import {
     Button,
     CircularProgress,
-    Link,
     Typography,
 } from '@material-ui/core';
-import { getGameID } from '../../../api/HTTPRequests';
+import { grabAndVerifyToken } from '../../../../api/HTTPRequests';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainMenuState } from './MainMenu';
 import { useSnackbar } from 'notistack';
-import constants from '../../../constants';
+import constants from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     instructions: {
@@ -32,62 +37,59 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-interface PrivateGameProps {
+interface RandomGameProps {
     handleStateChange: (newState: MainMenuState) => void;
 }
 
 
-function PrivateGame(props: PrivateGameProps) {
+function RandomGame(props: RandomGameProps) {
     const classes = useStyles();
+    const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
 
-    const [gameID, setGameID] = useState("");
-
     const handleCancel = () => {
+        disconnectSocket();
         props.handleStateChange(MainMenuState.LandingMenu);
-    }
-
-    const fetchGameID = () => {
-        getGameID()
-        .then(data => {
-            if (data.error) {
-                enqueueSnackbar(data.error, { 
-                    variant: 'error',
-                })
-            }
-            if (data.gameID) {
-                setGameID(data.gameID);
-            }
-        })
-        .catch(err => {
-            enqueueSnackbar(constants.ERROR_MESSAGE, { 
-                variant: 'error',
-            })
-        })
     }
 
     useEffect(() => {
         fetchGameID();
     }, [])
 
+    const fetchGameID = () => {
+        // check if token exists, then make socket connection
+        grabAndVerifyToken()
+        .then(token => {
+            initiateSocket(token, undefined, afterSocketConnect);
+        })
+        .catch(error => {
+            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                variant: 'error',
+            })
+        })
+    }
+
+    const afterSocketConnect = () => {
+        console.log("Connected")
+        subscribeToMatchSuccess(waitForMatch);
+    }
+
+    const waitForMatch = (matchSuccessData: MatchSuccessData) => {
+        const gameID = matchSuccessData.gameID;
+        disconnectSocket();
+        history.push(`/play/${gameID}`);
+
+    }
+
     return (
         <div>
             <div className={classes.instructions}>
                 <Typography variant='subtitle1' align='center' color='textSecondary'>
-                    Join the game using the following link:
+                    Finding a match...
                 </Typography>
             </div>
             <div className={classes.instructions}>
-                {gameID && 
-                    <Typography variant='h5' align='center' color='textPrimary'>
-                            <Link component={RouterLink} to={`/play/${gameID}`}>
-                                {`${process.env.REACT_APP_WEBSITE_DOMAIN}/play/${gameID}`}
-                            </Link>
-                    </Typography>
-                }
-                {!gameID &&
                     <CircularProgress />
-                }
             </div>
             <div className={classes.centered}>
                 <Button
@@ -102,4 +104,4 @@ function PrivateGame(props: PrivateGameProps) {
     );
 }
 
-export default PrivateGame;
+export default RandomGame;

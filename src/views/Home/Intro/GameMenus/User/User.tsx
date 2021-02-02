@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import jwt_decode from 'jwt-decode';
-import { JWTPayload, Role } from '../../../../api/HTTPRequests';
+import { JWTPayload, Role } from '../../../../../api/HTTPRequests';
 import SignIn from './SignIn';
 import SignedIn from './SignedIn';
 

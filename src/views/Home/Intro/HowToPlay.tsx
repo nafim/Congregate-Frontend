@@ -10,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(2, 0, 1)
     },
     outline: {
-        width: '350px',
+        width: 'auto',
+        maxWidth: '23em',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Intro() {
+function HowToPlay() {
     const classes = useStyles();
     const [showHowToPlay, setShowHowToPlay] = useState(false);
 
@@ -61,4 +62,4 @@ function Intro() {
     );
 }
 
-export default Intro;
+export default HowToPlay;

@@ -6,7 +6,7 @@ import {
     Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserInfo } from '../../../../api/HTTPRequests';
+import { getUserInfo } from '../../../../../api/HTTPRequests';
 import Username from './Username';
 
 const useStyles = makeStyles((theme) => ({

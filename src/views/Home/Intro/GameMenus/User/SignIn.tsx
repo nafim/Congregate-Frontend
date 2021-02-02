@@ -10,9 +10,9 @@ import {
 } from '@material-ui/core';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
-import { sendLoginEmail } from '../../../../api/HTTPRequests';
+import { sendLoginEmail } from '../../../../../api/HTTPRequests';
 import { useSnackbar } from 'notistack';
-import constants from '../../../../constants';
+import constants from '../../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {

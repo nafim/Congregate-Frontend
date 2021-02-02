@@ -10,9 +10,9 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForward from '@material-ui/icons/ArrowForward';
-import { postChangeUsername } from '../../../../api/HTTPRequests';
+import { postChangeUsername } from '../../../../../api/HTTPRequests';
 import { useSnackbar } from 'notistack';
-import constants from '../../../../constants';
+import constants from '../../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     item: {
