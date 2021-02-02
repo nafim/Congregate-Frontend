@@ -83,7 +83,7 @@ function Play() {
     if (ready) {
         return (
             <Game
-                position={initialPosition}
+                initialPosition={initialPosition}
                 username={username}
             />
         );

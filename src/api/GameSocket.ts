@@ -70,7 +70,7 @@ export interface GamePosition {
 }
 
 export interface GameUpdateData {
-    pos: GamePosition
+    pos: GamePosition;
 }
 
 export enum GameStatus {
@@ -81,11 +81,17 @@ export enum GameStatus {
     Loss = "Loss", // players ran out of time
 }
 
+interface PlayerData {
+    username: string;
+    pos: GamePosition | undefined;
+}
+
 // game status data object definition
 export interface GameStatusData {
     status: GameStatus
     timeRemaining: number // in seconds
     score: number // cumulative score after each game
+    players: PlayerData[]
 }
 
 // when successfully matched in random game, this event is sent

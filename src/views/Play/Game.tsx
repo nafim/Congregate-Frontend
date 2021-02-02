@@ -74,13 +74,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface GameProps{
-    position: GamePosition;
+    initialPosition: GamePosition;
     username: string;
 }
 
 function Game(props: GameProps) {
     const classes = useStyles();
     const history = useHistory();
+
+    const [otherPlayerPosition, setOtherPlayerPosition] = useState({lat: 42.345573, lng: -71.098326});
 
     const [chatOpen, setChatOpen] = useState(false);
     const [chatUnreadNumber, setChatUnreadNumber] = useState(0);
@@ -185,15 +187,15 @@ function Game(props: GameProps) {
             setPrevScore(stateRef.current.score);
             setScore(gameStatusData.score);
         }
-    }
 
-    const streetViewOptions = {
-        position: props.position,
-        pov: { heading: 165, pitch: 0 },
-        motionTracking: false,
-        motionTrackingControl: false,
-        addressControl: false,
-    };
+        // update the position of the other player
+        const otherPlayers = gameStatusData.players.filter(player => player.username !== props.username);
+        if (otherPlayers.length > 0) {
+            if (otherPlayers[0].pos) {
+                setOtherPlayerPosition(otherPlayers[0].pos);
+            }
+        }
+    }
 
     return (
         <div className={classes.root}>
@@ -246,7 +248,8 @@ function Game(props: GameProps) {
                 </div>
                 <StreetView
                     apiKey={process.env.REACT_APP_MAPS_API_KEY!}
-                    streetViewOptions={streetViewOptions}
+                    position={props.initialPosition}
+                    markerPosition={otherPlayerPosition}
                     onPositionChanged={handlePositionChange}
                 />
             </div>
