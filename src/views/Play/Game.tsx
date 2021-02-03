@@ -166,7 +166,7 @@ function Game(props: GameProps) {
             setEndGameMessage("You Won!");
             setEndGameMenuOpen(true);
             // calculate game duration
-            setGameDuration(constants.ROUND_TIMER - gameStatusData.timeRemaining);
+            setGameDuration(constants.ROUND_TIMER - stateRef.current.timeRemaining);
         }
         if (gameStatusData.status === GameStatus.Loss) {
             setEndGameMessage("Time's Up!");
@@ -183,7 +183,6 @@ function Game(props: GameProps) {
         }
         // set the score
         if (gameStatusData.score !== stateRef.current.score) {
-            console.log('score changed')
             setPrevScore(stateRef.current.score);
             setScore(gameStatusData.score);
         }
@@ -199,8 +198,8 @@ function Game(props: GameProps) {
 
     return (
         <div className={classes.root}>
-            <div className={clsx(classes.topBar, {[classes.topBarShift]: chatOpen,})}>
-                <AppBar position="static">
+            <div>
+                <AppBar position="static" className={clsx(classes.topBar, {[classes.topBarShift]: chatOpen,})}>
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
                             Score: {score}

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center'
     },
     introTitle: {
-        color: "black",
+        color: theme.palette.primary.dark,
         "font-family": "Arial, cursive",
         "font-size": "4.7rem",
         "text-align": "center",

@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ListChildComponentProps, VariableSizeList as EntryList } from 'react-window';
-import AutoSizer from "react-virtualized-auto-sizer";
 
 const useStyles = makeStyles((theme) => ({
     entryContainer: {

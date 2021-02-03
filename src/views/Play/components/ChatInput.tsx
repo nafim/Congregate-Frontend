@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     IconButton,
     TextField,
@@ -17,16 +17,23 @@ const useStyles = makeStyles((theme) => ({
 
 interface ChatInputProps {
     addMessage: (messageText: string) => void;
+    chatOpen: boolean;
 }
 
 function ChatInput(props: ChatInputProps) {
     const classes = useStyles();
     const [messageText, setMessageText] = useState("");
+    const inputRef = useRef<HTMLDivElement>(null);
 
     const handleSendMessage = () => {
         props.addMessage(messageText);
         setMessageText("");
     }
+
+    // set the focus to input when opening chat
+    useEffect(() => {
+        if (inputRef.current) inputRef.current.focus();
+    },[props.chatOpen])
 
     return(
         <div className={classes.root}>
@@ -35,9 +42,11 @@ function ChatInput(props: ChatInputProps) {
                 handleSendMessage();
             }}>
                 <TextField
+                    inputRef={inputRef}
                     id="chat-input"
                     multiline
                     fullWidth
+                    autoFocus
                     rows={1}
                     rowsMax={2}
                     placeholder="Type your message..."

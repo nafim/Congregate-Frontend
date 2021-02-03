@@ -80,14 +80,18 @@ function ChatWindow(props: ChatWindowProps) {
     }
 
     const showCurrentPlayers = (currentPlayers: CurrentPlayersData) => {
-        const otherPlayers = currentPlayers.players.filter(name => name !== props.username).join(', ');
+        // copy array of players
+        const otherPlayers = [...currentPlayers.players];
+        // remove my username from the array once
+        const index = otherPlayers.indexOf(props.username);
+        if (index > -1) { otherPlayers.splice(index, 1) };
+
         const newAlert = {
             messageText: `You are in a game with ${otherPlayers}`,
             name: '',
             sender: Sender.Alert
         };
         setMessages(messages => [...messages, newAlert]);
-        props.incrementChatUnread();
     }
 
     const otherPlayerConnect = (connectionData: PlayerConnectionData) => {
@@ -143,6 +147,7 @@ function ChatWindow(props: ChatWindowProps) {
                 />
                 <ChatInput 
                     addMessage={addMessage}
+                    chatOpen={props.chatOpen}
                 />
             </Drawer>
         </nav>
