@@ -161,12 +161,16 @@ function Game(props: GameProps) {
 
     const handleGameStatus = (gameStatusData: GameStatusData) => {
         console.log("have received game status update")
+        // handle game in progress stuff
+        if (gameStatusData.status === GameStatus.InProgress) {
+            // calculate game duration
+            setGameDuration(constants.ROUND_TIMER - stateRef.current.timeRemaining);
+        }
+        
         // handle endgame
         if (gameStatusData.status === GameStatus.Win) {
             setEndGameMessage("You Won!");
             setEndGameMenuOpen(true);
-            // calculate game duration
-            setGameDuration(constants.ROUND_TIMER - stateRef.current.timeRemaining);
         }
         if (gameStatusData.status === GameStatus.Loss) {
             setEndGameMessage("Time's Up!");

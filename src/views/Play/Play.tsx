@@ -57,7 +57,8 @@ function Play() {
     const afterSocketConnect = () => {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
-        subscribeToGameStatus(waitForGame);
+        // subscribe to waiting for game just once
+        subscribeToGameStatus(waitForGame, true);
         requestGameStatus();
     }
 

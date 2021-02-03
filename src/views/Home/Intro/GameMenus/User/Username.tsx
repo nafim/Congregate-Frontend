@@ -134,6 +134,7 @@ function Username(props: UsernameProps) {
                     }}>
                         <FormControl error={usernameError}>
                             <TextField
+                                autoFocus
                                 id="newUsername"
                                 label='Change Username'
                                 value={newUsername}
