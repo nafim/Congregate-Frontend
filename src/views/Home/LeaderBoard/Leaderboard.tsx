@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     header: {
         display: 'flex',
         justifyContent: 'space-between',
-        backgroundColor: '#353536',
+        backgroundColor: theme.palette.primary.dark,
     },
     headerTitles: {
         margin: theme.spacing(1,1,1),

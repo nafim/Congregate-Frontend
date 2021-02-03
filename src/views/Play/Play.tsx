@@ -57,14 +57,13 @@ function Play() {
     const afterSocketConnect = () => {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
-        sendPlayerReady();
         subscribeToGameStatus(waitForGame);
         requestGameStatus();
     }
 
     const waitForGame = (data: GameStatusData) => {
         if (data.status === GameStatus.InLobby) {
-            
+            sendPlayerReady();
         } else {
             setLoadingMessage("Starting...");
         }

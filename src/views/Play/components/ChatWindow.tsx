@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
     chatHeader: {
         display: "flex",
-        backgroundColor: "#353536",
+        backgroundColor: theme.palette.primary.dark,
         alignItems: "center",
         padding: theme.spacing(0, 1),
         // necessary for content below header to be below topBar

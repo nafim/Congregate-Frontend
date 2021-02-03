@@ -48,7 +48,7 @@ function Loading(props: LoadingProps) {
     return (
         <div className={classes.root}>
             <div>
-                <AppBar style={{backgroundColor: "#4a4a50"}} position="static">
+                <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
                         </Typography>

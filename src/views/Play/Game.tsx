@@ -200,7 +200,7 @@ function Game(props: GameProps) {
     return (
         <div className={classes.root}>
             <div className={clsx(classes.topBar, {[classes.topBarShift]: chatOpen,})}>
-                <AppBar style={{backgroundColor: "#4a4a50"}} position="static">
+                <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
                             Score: {score}
