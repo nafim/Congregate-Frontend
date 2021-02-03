@@ -1,31 +1,19 @@
 import React, { useState, useEffect, useRef} from 'react';
-import clsx from 'clsx';
 import {
-    AppBar,
-    Badge,
-    Button,
     Fade,
-    IconButton,
-    Toolbar,
-    Typography,
 } from '@material-ui/core';
 import {
-    disconnectSocket,
     subscribeToGameStatus,
     GameStatusData,
     GameStatus,
     GamePosition,
     sendGameUpdate,
 } from '../../api/GameSocket';
-import { useHistory } from "react-router-dom";
-import ChatIcon from '@material-ui/icons/Chat';
 import { makeStyles } from '@material-ui/core/styles';
 import StreetView from './components/StreetView';
-import ChatWindow from './components/ChatWindow';
 import EndGameMenu from './components/EndGameMenu';
 import constants from '../../constants';
-
-const drawerWidth = 350;
+import GameUI from './components/GameUI';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,29 +21,6 @@ const useStyles = makeStyles((theme) => ({
         "flex-flow": "column",
         height: "100vh",
         width: "100vw"
-    },
-    topBar: {
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    topBarShift: {
-        [theme.breakpoints.up("sm")]: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginRight: drawerWidth,
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            })
-        }
-    },
-    chatButton: {
-        marginRight: theme.spacing(1),
-        marginLeft: theme.spacing(2)
-    },
-    title: {
-        flexGrow: 1,
     },
     endGame: {
         display: 'flex',
@@ -80,12 +45,8 @@ interface GameProps{
 
 function Game(props: GameProps) {
     const classes = useStyles();
-    const history = useHistory();
 
     const [otherPlayerPosition, setOtherPlayerPosition] = useState({lat: 42.345573, lng: -71.098326});
-
-    const [chatOpen, setChatOpen] = useState(false);
-    const [chatUnreadNumber, setChatUnreadNumber] = useState(0);
 
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
@@ -98,20 +59,6 @@ function Game(props: GameProps) {
     // set up state ref so async socket callback func can access latest state
     const stateRef = useRef<{score: number, timeRemaining: number}>({score: 0, timeRemaining: 0});
 
-    const handleChatToggle = () => {
-        setChatOpen(!chatOpen);
-        setChatUnreadNumber(0);
-    }
-
-    const incrementChatUnread = () => {
-        setChatUnreadNumber(chatUnreadNumber => chatUnreadNumber + 1);
-    }
-
-    const handleExit = () => {
-        disconnectSocket();
-        history.push('/');
-    }
-
     const handleEndGameMenuOpen = (open: boolean) => {
         setEndGameMenuOpen(open);
     }
@@ -119,20 +66,6 @@ function Game(props: GameProps) {
     const handlePositionChange = (newPosition: GamePosition) => {
         console.log("Have handled game position change");
         sendGameUpdate({pos: newPosition});
-    }
-
-    const showTimer = () => {
-        const newTimeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
-        const minutes = Math.floor(newTimeRemaining/60);
-        let seconds = Math.floor(newTimeRemaining % 60);
-        let secondString;
-        if (seconds < 10) {
-            secondString = "0" + seconds;
-        } else {
-            secondString = String(seconds);
-        }
-        
-        return (`${minutes}:${secondString}`);
     }
 
     // set up interval to calculate the time remaining
@@ -202,38 +135,11 @@ function Game(props: GameProps) {
 
     return (
         <div className={classes.root}>
-            <div>
-                <AppBar position="static" className={clsx(classes.topBar, {[classes.topBarShift]: chatOpen,})}>
-                    <Toolbar>
-                        <Typography variant="h6" className={classes.title}>
-                            Score: {score}
-                        </Typography>
-                        <Typography variant="h6" className={classes.title}>
-                            Time Remaining: {showTimer()}
-                        </Typography>
-                        <Button 
-                            color="inherit"
-                            onClick={e => handleExit()}
-                        >
-                            Exit
-                        </Button>
-                        {!chatOpen && 
-                        <IconButton edge="start" className={classes.chatButton} color="inherit" aria-label="chat"
-                            onClick={handleChatToggle}
-                        >
-                            <Badge color="secondary" badgeContent={chatUnreadNumber} max={9}>
-                                <ChatIcon />
-                            </Badge>
-                        </IconButton>}
-                    </Toolbar>
-                </AppBar>
-                <ChatWindow
-                    chatOpen={chatOpen}
-                    username={props.username}
-                    handleChatToggle={handleChatToggle}
-                    incrementChatUnread={incrementChatUnread}
-                />
-            </div>
+            <GameUI
+                username={props.username}
+                timeRemaining={timeRemaining}
+                score={score}
+            />
             <div className={classes.content}>
                 <div className={classes.endGame}>
                     {
