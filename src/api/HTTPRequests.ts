@@ -152,3 +152,25 @@ export const sendLoginEmail = (email: string) => {
         .then(res => res.json())
     );
 }
+
+
+//////////////////////////////////////////////////////
+//////////////// Leaderboard requests ////////////////
+//////////////////////////////////////////////////////
+
+export interface AvgEntry {
+    username: string;
+    avgScore: number;
+}
+
+export interface MaxEntry {
+    username: string;
+    maxScore: number;
+}
+
+export const getLeaderboard = () => {
+    return (
+        fetch(process.env.REACT_APP_API_BACKEND + '/api/game/leaderboard')
+        .then(res => res.json())
+    );
+}
