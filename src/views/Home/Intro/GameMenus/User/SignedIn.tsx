@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     Button,
+    Collapse,
     Divider,
     Link,
     Typography
@@ -69,7 +70,7 @@ function SignedIn(props: SignedInProps) {
 
     return(
         <div>
-            {!showUserInfo && 
+            <Collapse in={!showUserInfo} unmountOnExit>
                 <div className={classes.centered}>
                     <div className={classes.item}>
                         <Typography variant='subtitle1' color='textPrimary'>
@@ -94,8 +95,8 @@ function SignedIn(props: SignedInProps) {
                         </div>
                     </div>
                 </div>
-            }
-            {showUserInfo && 
+            </Collapse>
+            <Collapse in={showUserInfo} unmountOnExit>
                 <div className={classes.centered}>
                     <div className={classes.outline}>
                         <div>
@@ -125,7 +126,7 @@ function SignedIn(props: SignedInProps) {
                         </div>
                     </div>
                 </div>
-            }
+            </Collapse>
         </div>
     );
 }

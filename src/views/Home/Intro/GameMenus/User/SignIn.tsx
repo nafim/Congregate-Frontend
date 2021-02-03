@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
     Button,
+    Collapse,
     FormControl,
     FormHelperText,
     IconButton,
@@ -106,7 +107,7 @@ function SignIn() {
 
     return(
         <div className={classes.root}>
-            {!signIn && 
+            <Collapse in={!signIn} unmountOnExit>
                 <div className={classes.centered}>
                     <Button
                         className={classes.introButtons}
@@ -116,8 +117,8 @@ function SignIn() {
                         Sign in to save progress
                     </Button>
                 </div>
-            }
-            {signIn && 
+            </Collapse>
+            <Collapse in={signIn} unmountOnExit>
                 <div>
                     <Typography variant='subtitle1' align='center' color='textSecondary'>
                         Sign in with email:
@@ -158,7 +159,7 @@ function SignIn() {
                         </Button>
                     </div>
                 </div>
-            }
+            </Collapse>
         </div>
     );
 }

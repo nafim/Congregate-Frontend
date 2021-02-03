@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
     Button,
+    Collapse,
     Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,7 +46,7 @@ function HowToPlay() {
                         How to Play
                     </Button>
             </div>
-            { showHowToPlay &&
+            <Collapse in={showHowToPlay} unmountOnExit>
                 <div className={classes.centered}>
                     <div className={classes.outline}>
                             <div className={classes.content}>
@@ -57,7 +58,7 @@ function HowToPlay() {
                             </div>
                     </div>
                 </div>
-            }
+            </Collapse>
         </div>
     );
 }

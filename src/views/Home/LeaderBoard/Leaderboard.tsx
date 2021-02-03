@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Button,
     CircularProgress,
+    Collapse,
     MenuItem,
     Select,
     Typography
@@ -88,7 +89,7 @@ function Leaderboard() {
                         Leaderboard
                     </Button>
             </div>
-            { showLeaderboard &&
+            <Collapse in={showLeaderboard} unmountOnExit>
                 <div className={classes.centered}>
                     <div className={classes.container}>
                         <div className={classes.header}>
@@ -137,7 +138,7 @@ function Leaderboard() {
                         }
                     </div>
                 </div>
-            }
+            </Collapse>
         </div>
     );
 }
