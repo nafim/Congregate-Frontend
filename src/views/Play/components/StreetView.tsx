@@ -31,8 +31,8 @@ function StreetView(props: StreetViewProps) {
                 setMarker(new google.maps.Marker({
                     position: props.markerPosition,
                     map: streetView,
-                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=wc-male|FFFF00',
-                    // icon: 'http://maps.google.com/mapfiles/ms/micons/man.png',
+                    icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=wc-male|FFFF00',
+                    // icon: 'https://maps.google.com/mapfiles/ms/micons/man.png',
                     title: 'Other Player'
                 }))
             }

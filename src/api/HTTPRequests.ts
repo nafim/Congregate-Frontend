@@ -146,7 +146,7 @@ export const sendLoginEmail = (email: string) => {
             },
             body: JSON.stringify ({
                 email,
-                callbackUrl: `http://${process.env.REACT_APP_WEBSITE_DOMAIN}/verify`
+                callbackUrl: `https://${process.env.REACT_APP_WEBSITE_DOMAIN}/verify`
             }),
         })
         .then(res => res.json())
