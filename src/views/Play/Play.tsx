@@ -9,6 +9,7 @@ import {
     subscribeToInitialPosition,
     GameUpdateData,
     requestGameStatus,
+    GamePosition,
 } from '../../api/GameSocket';
 import { grabAndVerifyToken, JWTPayload } from '../../api/HTTPRequests';
 import {
@@ -58,7 +59,7 @@ function Play() {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
         // subscribe to waiting for game just once
-        subscribeToGameStatus(waitForGame, true);
+        subscribeToGameStatus(waitForGame);
         requestGameStatus();
     }
 
@@ -73,12 +74,9 @@ function Play() {
     const startingGame = (initialPositionData: GameUpdateData) => {
         console.log("This is the new initial position");
         console.log(initialPositionData.pos);
-        setInitialPosition(initialPositionData.pos)
-        if (!ready) {
-            setReady(true);
-        }
+        setInitialPosition(initialPositionData.pos);
+        setReady(true);
     }
-
 
     if (ready) {
         return (

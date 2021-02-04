@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef} from 'react';
 import {
-    Fade,
+    Collapse,
 } from '@material-ui/core';
 import {
     subscribeToGameStatus,
@@ -46,7 +46,8 @@ interface GameProps{
 function Game(props: GameProps) {
     const classes = useStyles();
 
-    const [otherPlayerPosition, setOtherPlayerPosition] = useState({lat: 42.345573, lng: -71.098326});
+    const [playerPosition, setPlayerPosition] = useState(props.initialPosition);
+    const [otherPlayerPosition, setOtherPlayerPosition] = useState(props.initialPosition);
 
     const [endGameMessage, setEndGameMessage] = useState('');
     const [endGameMenuOpen, setEndGameMenuOpen] = useState(false);
@@ -58,15 +59,40 @@ function Game(props: GameProps) {
     const [score, setScore] = useState(0);
     // set up state ref so async socket callback func can access latest state
     const stateRef = useRef<{score: number, timeRemaining: number}>({score: 0, timeRemaining: 0});
+    // array which keeps history of all past positions
+    const positionsRef = useRef<GamePosition[]>([]);
 
     const handleEndGameMenuOpen = (open: boolean) => {
         setEndGameMenuOpen(open);
     }
 
+    // callback function called when player moves in streetview
     const handlePositionChange = (newPosition: GamePosition) => {
         console.log("Have handled game position change");
         sendGameUpdate({pos: newPosition});
+        
+        // if new position and last position aren't the same, add it to positions history
+        const lastPosition = positionsRef.current[positionsRef.current.length - 1];
+        if (newPosition.lat !== lastPosition.lat && newPosition.lng !== lastPosition.lng) {
+            positionsRef.current.push(newPosition);
+        }
+        console.log(positionsRef.current);
     }
+
+    // bring player back to last position
+    const handleUndoPosition = () => {
+        console.log(positionsRef.current.length);
+        if (positionsRef.current.length > 1) {
+            positionsRef.current.pop();
+            setPlayerPosition(positionsRef.current[positionsRef.current.length - 1])
+        }
+    }
+
+    // when the round restarts, reset the positions history array
+    useEffect(() => {
+        positionsRef.current = [props.initialPosition];
+        setPlayerPosition(props.initialPosition);
+    }, [props.initialPosition])
 
     // set up interval to calculate the time remaining
     useEffect(() => {
@@ -139,12 +165,11 @@ function Game(props: GameProps) {
                 username={props.username}
                 timeRemaining={timeRemaining}
                 score={score}
+                handleUndoPosition={handleUndoPosition}
             />
             <div className={classes.content}>
                 <div className={classes.endGame}>
-                    {
-                        endGameMenuOpen &&
-                        <Fade in={endGameMenuOpen}>
+                    <Collapse in={endGameMenuOpen} unmountOnExit>
                         <EndGameMenu 
                             message={endGameMessage}
                             score={score}
@@ -152,12 +177,11 @@ function Game(props: GameProps) {
                             gameDuration={gameDuration}
                             handleEndGameMenuOpen={handleEndGameMenuOpen}
                         />
-                        </Fade>
-                    }
+                    </Collapse>
                 </div>
                 <StreetView
                     apiKey={process.env.REACT_APP_MAPS_API_KEY!}
-                    position={props.initialPosition}
+                    position={playerPosition}
                     markerPosition={otherPlayerPosition}
                     onPositionChanged={handlePositionChange}
                 />

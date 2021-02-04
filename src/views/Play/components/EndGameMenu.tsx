@@ -10,6 +10,7 @@ import {
     Card,
     CardContent,
     CircularProgress,
+    Collapse,
     Divider,
     Typography,
 } from '@material-ui/core';
@@ -87,7 +88,7 @@ const waitForGame = (data: GameStatusData) => {
                         </Typography>
                     </div>
                 </div>
-                {waiting &&
+                <Collapse in={waiting} unmountOnExit>
                     <div className={classes.items}>
                         <div className={classes.centered}>
                             <Typography className={classes.items} color='textSecondary'>
@@ -98,8 +99,8 @@ const waitForGame = (data: GameStatusData) => {
                             <CircularProgress className={classes.items} />
                         </div>
                     </div>
-                }
-                {!waiting &&
+                </Collapse>
+                <Collapse in={!waiting} unmountOnExit>
                     <div className={classes.centered} >
                         <Button
                             className={classes.items}
@@ -109,7 +110,7 @@ const waitForGame = (data: GameStatusData) => {
                             Play Again
                         </Button>
                     </div>
-                }
+                </Collapse>
             </CardContent>
         </Card>
     );

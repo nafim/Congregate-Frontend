@@ -48,6 +48,7 @@ interface GameUIProps {
     username: string;
     timeRemaining: number;
     score: number;
+    handleUndoPosition: () => void;
 }
 
 function GameUI(props: GameUIProps) {
@@ -98,13 +99,7 @@ function GameUI(props: GameUIProps) {
                     <div>
                         <Button 
                             color="inherit"
-                            onClick={e => handleExit()}
-                        >
-                            Reset
-                        </Button>
-                        <Button 
-                            color="inherit"
-                            onClick={e => handleExit()}
+                            onClick={e => props.handleUndoPosition()}
                         >
                             Undo
                         </Button>
