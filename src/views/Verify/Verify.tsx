@@ -24,12 +24,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2,2,0),
         display: 'inline-flex',
     },
-    introButtons: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(0),
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(1)
-    },
     centered: {
         display: 'flex',
         alignItems: 'center',
@@ -79,15 +73,17 @@ function Intro() {
         if (isValidUsername()) {
             register(username, query.get("key")!)
             .then(data => {
-                if (data.errors.length > 0) {
-                    const error = data.errors[0];
-                    if (error.param === 'username') {
-                        setUsernameError(true);
-                        setUsernameErrorText(error.msg);
-                    } else {
-                        enqueueSnackbar(constants.ERROR_MESSAGE, { 
-                            variant: 'error',
-                        })
+                if (data.errors) {
+                    if (data.errors.length > 0) {
+                        const error = data.errors[0];
+                        if (error.param === 'username') {
+                            setUsernameError(true);
+                            setUsernameErrorText(error.msg);
+                        } else {
+                            enqueueSnackbar(constants.ERROR_MESSAGE, { 
+                                variant: 'error',
+                            })
+                        }
                     }
                 } else {
                     history.push('/');
@@ -149,7 +145,7 @@ function Intro() {
                             <Typography variant='subtitle1' align='center' color='textSecondary'>
                                 Create your username:
                             </Typography>
-                            <form noValidate autoComplete="off" onSubmit={(e) => {
+                            <form className={classes.item} noValidate autoComplete="off" onSubmit={(e) => {
                                 e.preventDefault();
                                 handleEnterUsername();
                             }}>
