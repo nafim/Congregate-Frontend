@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center'
     },
     introTitle: {
-        color: "black",
+        color: theme.palette.primary.dark,
         "font-family": "Arial, cursive",
         "font-size": "4.7rem",
         "text-align": "center",
@@ -128,7 +128,7 @@ function Intro() {
     return (
         <div className={classes.heroContent}>
             <div>
-                <Typography className={classes.introTitle}>Congregate</Typography>
+                <Typography className={classes.introTitle}>{process.env.REACT_APP_WEBSITE_NAME!}</Typography>
             </div>
             <div className={classes.centered}>
                 <div className={classes.menuContainer}>

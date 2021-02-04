@@ -36,7 +36,7 @@ function Intro() {
     return (
         <div className={classes.heroContent}>
             <div>
-                <Typography className={classes.introTitle}>Congregate</Typography>
+                <Typography className={classes.introTitle}>{process.env.REACT_APP_WEBSITE_NAME!}</Typography>
             </div>
             <div className={classes.centered}>
                 <MainMenu />

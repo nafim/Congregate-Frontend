@@ -42,6 +42,24 @@ function StreetView(props: StreetViewProps) {
         }
     },[streetView])
 
+    // if streetView has been created, remove unnecessary text from the view
+    useEffect(() => {
+        if (ref.current) {
+            // ref.current.getElementsByClassName('gm-style-cc');
+            const elements = ref.current.getElementsByClassName('gm-style-cc');
+            for (var i=0; i<elements.length; i++) {
+                elements[i].innerHTML = '';
+            }
+            const links = ref.current.getElementsByTagName('a');
+            for (var j=0; j<links.length; j++) {
+                let title=links[j].getAttribute('title');
+                if (title === "Open this area in Google Maps (opens a new window)"){
+                    links[j].innerHTML = '';
+                }
+            }
+        }
+    })
+
     // if streetView has been created, then upon position change, update streetView
     useEffect(() => {
         if (streetView) {
@@ -67,6 +85,7 @@ function StreetView(props: StreetViewProps) {
                     motionTracking: false,
                     motionTrackingControl: false,
                     addressControl: false,
+                    fullscreenControl: false,
                 }));
             })
             .catch(e => {
