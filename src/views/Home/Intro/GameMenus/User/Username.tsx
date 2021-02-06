@@ -61,7 +61,6 @@ function Username(props: UsernameProps) {
             .then(data => {
                 // if error, then show error on the username field
                 if (data.error) {
-                    console.log(data);
                     setUsernameError(true);
                     setUsernameErrorText(data.error);
                 // if success, close username field, update username

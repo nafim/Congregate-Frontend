@@ -3,8 +3,10 @@ import { useHistory } from 'react-router-dom';
 import {
     initiateSocket,
     disconnectSocket,
+    subscribeToConnectErrors,
     subscribeToMatchSuccess,
     MatchSuccessData,
+    ErrorData,
 } from '../../../../api/GameSocket';
 import {
     Button,
@@ -61,6 +63,7 @@ function RandomGame(props: RandomGameProps) {
         grabAndVerifyToken()
         .then(token => {
             initiateSocket(token, undefined, afterSocketConnect);
+            subscribeToConnectErrors(authenticationError);
         })
         .catch(error => {
             enqueueSnackbar(constants.ERROR_MESSAGE, { 
@@ -78,7 +81,12 @@ function RandomGame(props: RandomGameProps) {
         const gameID = matchSuccessData.gameID;
         disconnectSocket();
         history.push(`/play/${gameID}`);
+    }
 
+    // if auth error, delete the token, get another token
+    const authenticationError = (data: ErrorData) => {
+        localStorage.removeItem(process.env.REACT_APP_TOKEN_NAME!);
+        grabAndVerifyToken();
     }
 
     return (

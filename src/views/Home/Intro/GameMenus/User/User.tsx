@@ -19,8 +19,13 @@ function User() {
     useEffect(() => {
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
         // decide whether user is logged in based on token
-        if (token) {
-            const decoded = jwt_decode<JWTPayload>(token);
+        let decoded: JWTPayload | undefined;
+        try {
+            decoded = jwt_decode<JWTPayload>(token!);
+        } catch {
+            decoded = undefined;
+        }
+        if (decoded) {
             if (decoded.role !== Role.Anonymous) {
                 // check existing token is expired or not within margin of secondsBeforeExpire
                 const now = Date.now().valueOf() / 1000;

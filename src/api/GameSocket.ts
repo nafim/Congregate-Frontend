@@ -13,13 +13,10 @@ export const initiateSocket = (authToken: string, gameID?: string, cb?: () => vo
             token: authToken
         }
     });
+    console.log('Connecting to socket...');
     if (cb) {
         socket.on('connect', cb);
     }
-    socket.on('connect_error', (err: any) => {
-        console.log(err.message);
-    });
-    console.log('Connecting to socket...');
     socket.on('disconnect', () => {
         console.log('Disconnecting socket...');
     })
@@ -27,6 +24,11 @@ export const initiateSocket = (authToken: string, gameID?: string, cb?: () => vo
 
 export const isSocketConnected = () => {
     if (socket) return socket.connected;
+    return false;
+}
+
+export const getSocketId = () => {
+    if (socket) return socket.id;
     return false;
 }
 
@@ -84,6 +86,7 @@ export enum GameStatus {
 interface PlayerData {
     username: string;
     pos: GamePosition | undefined;
+    socketId: string | undefined;
 }
 
 // game status data object definition

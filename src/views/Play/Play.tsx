@@ -10,6 +10,8 @@ import {
     GameUpdateData,
     requestGameStatus,
     GamePosition,
+    subscribeToConnectErrors,
+    ErrorData,
 } from '../../api/GameSocket';
 import { grabAndVerifyToken, JWTPayload } from '../../api/HTTPRequests';
 import {
@@ -47,6 +49,7 @@ function Play() {
             const decoded = jwt_decode<JWTPayload>(token);
             setUsername(decoded.name);
             initiateSocket(token, gameID, afterSocketConnect);
+            subscribeToConnectErrors(authenticationError);
         })
         .catch(error => {
             enqueueSnackbar(constants.ERROR_MESSAGE, { 
@@ -58,24 +61,34 @@ function Play() {
     const afterSocketConnect = () => {
         console.log("Connected")
         subscribeToInitialPosition(startingGame);
-        // subscribe to waiting for game just once
-        subscribeToGameStatus(waitForGame);
+        // should send ready and wait for game just once
+        subscribeToGameStatus(sendReady, true);
+        subscribeToGameStatus(waitingForGame, true);
         requestGameStatus();
     }
 
-    const waitForGame = (data: GameStatusData) => {
+    const sendReady = (data: GameStatusData) => {
         if (data.status === GameStatus.InLobby) {
             sendPlayerReady();
-        } else {
+        }
+    }
+
+    const waitingForGame = (data: GameStatusData) => {
+        if (data.status === GameStatus.Starting) {
             setLoadingMessage("Starting...");
         }
     }
 
     const startingGame = (initialPositionData: GameUpdateData) => {
-        console.log("This is the new initial position");
-        console.log(initialPositionData.pos);
+        // console.log("This is the new initial position");
+        // console.log(initialPositionData.pos);
         setInitialPosition(initialPositionData.pos);
         setReady(true);
+    }
+
+    const authenticationError = (data: ErrorData) => {
+        localStorage.removeItem(process.env.REACT_APP_TOKEN_NAME!);
+        grabAndVerifyToken();
     }
 
     if (ready) {

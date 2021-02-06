@@ -8,6 +8,7 @@ import {
     GameStatus,
     GamePosition,
     sendGameUpdate,
+    getSocketId,
 } from '../../api/GameSocket';
 import { makeStyles } from '@material-ui/core/styles';
 import StreetView from './components/StreetView';
@@ -68,7 +69,7 @@ function Game(props: GameProps) {
 
     // callback function called when player moves in streetview
     const handlePositionChange = (newPosition: GamePosition) => {
-        console.log("Have handled game position change");
+        // console.log("Have handled game position change");
         sendGameUpdate({pos: newPosition});
         
         // if new position and last position aren't the same, add it to positions history
@@ -76,12 +77,10 @@ function Game(props: GameProps) {
         if (newPosition.lat !== lastPosition.lat && newPosition.lng !== lastPosition.lng) {
             positionsRef.current.push(newPosition);
         }
-        console.log(positionsRef.current);
     }
 
     // bring player back to last position
     const handleUndoPosition = () => {
-        console.log(positionsRef.current.length);
         if (positionsRef.current.length > 1) {
             positionsRef.current.pop();
             setPlayerPosition(positionsRef.current[positionsRef.current.length - 1])
@@ -119,7 +118,7 @@ function Game(props: GameProps) {
     },[])
 
     const handleGameStatus = (gameStatusData: GameStatusData) => {
-        console.log("have received game status update")
+        // console.log("have received game status update")
         // handle game in progress stuff
         if (gameStatusData.status === GameStatus.InProgress) {
             // calculate game duration
@@ -141,7 +140,7 @@ function Game(props: GameProps) {
         }
         // synchornize the time remaining
         if (Math.abs(gameStatusData.timeRemaining - stateRef.current.timeRemaining) > 1 ){
-            console.log('resyncrhonize time');
+            // console.log('resyncrhonize time');
             setTimeRemaining(gameStatusData.timeRemaining);
         }
         // set the score
@@ -151,7 +150,8 @@ function Game(props: GameProps) {
         }
 
         // update the position of the other player
-        const otherPlayers = gameStatusData.players.filter(player => player.username !== props.username);
+        const socketId = getSocketId();
+        const otherPlayers = gameStatusData.players.filter(player => player.socketId !== socketId);
         if (otherPlayers.length > 0) {
             if (otherPlayers[0].pos) {
                 setOtherPlayerPosition(otherPlayers[0].pos);

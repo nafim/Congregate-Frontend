@@ -52,9 +52,17 @@ export const grabAndVerifyToken = () => {
     return (
     new Promise(function(resolve: (value: string) => void, reject) {
         const token = localStorage.getItem(process.env.REACT_APP_TOKEN_NAME!);
+
+        // check the existence of token by trying decode
+        let decoded: JWTPayload | undefined;
+        try {
+            decoded = jwt_decode<JWTPayload>(token!);
+        } catch {
+            decoded = undefined;
+        }
+
         // if a token already exists, check for expiration
-        if (token) {
-            const decoded = jwt_decode<JWTPayload>(token);
+        if (decoded) {
             // check existing token is expired or not within margin of secondsBeforeExpire
             const now = Date.now().valueOf() / 1000;
             const secondsBeforeExpire = 1800;
@@ -70,7 +78,7 @@ export const grabAndVerifyToken = () => {
                 })
             // if not expiring soon
             } else {
-                resolve(token);
+                resolve(token!);
             }
         // if no token exists, grab an anonymous token
         } else {

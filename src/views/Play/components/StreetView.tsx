@@ -40,7 +40,8 @@ function StreetView(props: StreetViewProps) {
                 google.maps.event.clearInstanceListeners(streetView!);
             }
         }
-    },[streetView])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[streetView, marker])
 
     // if streetView has been created, remove unnecessary text from the view
     useEffect(() => {
@@ -65,14 +66,14 @@ function StreetView(props: StreetViewProps) {
         if (streetView) {
             streetView.setPosition(props.position);
         }
-    }, [props.position])
+    }, [props.position, streetView])
 
     // if marker has been created, then upon position change, update marker
     useEffect(() => {
         if (marker) {
             marker.setPosition(props.markerPosition);
         }
-    }, [props.markerPosition])
+    }, [props.markerPosition, marker])
 
     const createView = (ref: React.RefObject<HTMLDivElement>) => {
         if (!streetView) {
