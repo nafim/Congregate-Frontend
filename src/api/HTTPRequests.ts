@@ -1,8 +1,8 @@
 import jwt_decode from 'jwt-decode';
 
-export const getGameID = () => {
+export const getGameID = (city: string) => {
     return (
-        fetch(process.env.REACT_APP_API_BACKEND + '/api/getUniqueGameID')
+        fetch(process.env.REACT_APP_API_BACKEND + `/api/getUniqueGameID?city=${city}`)
         .then(res => res.json())
     );
 }
