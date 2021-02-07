@@ -9,7 +9,6 @@ import {
     subscribeToInitialPosition,
     GameUpdateData,
     requestGameStatus,
-    GamePosition,
     subscribeToConnectErrors,
     ErrorData,
 } from '../../api/GameSocket';

@@ -41,7 +41,7 @@ function StreetView(props: StreetViewProps) {
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[streetView, marker])
+    },[streetView])
 
     // if streetView has been created, remove unnecessary text from the view
     useEffect(() => {
