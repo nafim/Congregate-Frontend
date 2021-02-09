@@ -78,11 +78,11 @@ function MessageRow({index, data, style}: ListChildComponentProps) {
             <div style={style}>
                 <div ref={rowRef} 
                 className={classes.messageContainer} 
-                style={message.sender === Sender.Me ? {alignItems: "end"} : {alignItems: "start"}}
+                style={message.sender === Sender.Me ? {alignItems: "flex-end"} : {alignItems: "flex-start"}}
                 >
                     <div 
                         className={classes.messageContent}
-                        style={message.sender === Sender.Me ? {alignItems: "end"} : {alignItems: "start"}}
+                        style={message.sender === Sender.Me ? {alignItems: "flex-end"} : {alignItems: "flex-start"}}
                     >
                         {
                             showName() &&
