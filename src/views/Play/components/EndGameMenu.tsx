@@ -84,7 +84,7 @@ const waitForGame = (data: GameStatusData) => {
                     <div className={classes.items}>
                         <Typography variant='subtitle1' color="textPrimary">
                         Total Score: <b> {props.score} (+{props.score - props.prevScore}) </b> <br />
-                        Round Duration: <b> {Math.round(props.gameDuration/60)}m {Math.round(props.gameDuration%60)}s </b> <br />
+                        Round Duration: <b> {Math.floor(props.gameDuration/60)}m {Math.floor(props.gameDuration%60)}s </b> <br />
                         </Typography>
                     </div>
                 </div>
