@@ -5,9 +5,12 @@ import {
     CircularProgress,
     Collapse,
     FormControl,
+    IconButton,
     Link,
     MenuItem,
     Select,
+    SvgIcon,
+    Tooltip,
     Typography,
 } from '@material-ui/core';
 import { getGameID } from '../../../../api/HTTPRequests';
@@ -17,11 +20,16 @@ import { useSnackbar } from 'notistack';
 import constants from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: theme.spacing(0, 3, 0)
+    instruction: {
+        margin: theme.spacing(0, 10, 0)
     },
     items: {
         margin: theme.spacing(0, 0, 2),
+    },
+    link: {
+        margin: theme.spacing(0, 2, 2),
+        display: 'flex',
+        alignItems: 'center'
     },
     cancelButton: {
         marginTop: theme.spacing(1),
@@ -51,7 +59,7 @@ function PrivateGame(props: PrivateGameProps) {
         props.handleStateChange(MainMenuState.LandingMenu);
     }
 
-    const handleCitySelect = (evt: React.ChangeEvent<{ value: unknown}>) => {
+    const handleCitySelect = (evt: React.ChangeEvent<{ value: unknown }>) => {
         setCity(evt.target.value as string);
         setLoading(true);
         fetchGameID(evt.target.value as string);
@@ -79,16 +87,21 @@ function PrivateGame(props: PrivateGameProps) {
     }
 
     return (
-        <div className={classes.root}>
+        <div>
             <div className={classes.centered}>
-                <Typography variant='subtitle1' align='center' color='textSecondary'>
+                <Typography
+                    className={classes.instruction}
+                    variant='subtitle1'
+                    align='center'
+                    color='textSecondary'
+                >
                     Select a city:
                 </Typography>
                 <FormControl className={classes.items}>
                     {/* <InputLabel id="select-city">City</InputLabel> */}
                     <Select
                         labelId="select-city"
-                        inputProps={{min: 0, style: { textAlign: 'center' }}}
+                        inputProps={{ min: 0, style: { textAlign: 'center' } }}
                         id="select-city"
                         value={city}
                         defaultValue='city'
@@ -105,11 +118,25 @@ function PrivateGame(props: PrivateGameProps) {
                     <Typography variant='subtitle1' align='center' color='textSecondary'>
                         Join the game using the following link:
                     </Typography>
-                    <Typography variant='h5' align='center' color='textPrimary'>
-                        <Link component={RouterLink} to={`/play/${gameID}`}>
-                            {`${process.env.REACT_APP_WEBSITE_DOMAIN}/play/${gameID}`}
-                        </Link>
-                    </Typography>
+                    <div className={classes.link}>
+                        <Typography variant='h5' align='center' color='textPrimary'>
+                            <Link component={RouterLink} to={`/play/${gameID}`}>
+                                {`${process.env.REACT_APP_WEBSITE_DOMAIN}/play/${gameID}`}
+                            </Link>
+                        </Typography>
+                        <Tooltip title="Copy" placement="top">
+                            <IconButton
+                                aria-label="change username"
+                                edge="end"
+                                onClick={() => {navigator.clipboard.writeText(`${process.env.REACT_APP_WEBSITE_DOMAIN}/play/${gameID}`)}}
+                            >
+                                <SvgIcon>
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                </SvgIcon>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Collapse>
                 <Collapse in={loading} unmountOnExit>
                     <CircularProgress />
