@@ -109,7 +109,7 @@ function PrivateGame(props: PrivateGameProps) {
                     >
                         <MenuItem value={'Boston'}>Boston</MenuItem>
                         <MenuItem value={'Buffalo'}>Buffalo</MenuItem>
-                        <MenuItem value={'New York'}>New York</MenuItem>
+                        <MenuItem value={'NewYork'}>New York</MenuItem>
                     </Select>
                 </FormControl>
             </div>
