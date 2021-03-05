@@ -1,46 +1,13 @@
-# Getting Started with Create React App
+# Street Skipper
+A fun multiplayer navigational game where players are separated into random locations in a city of their choice. They must communicate with each other and use their knowledge of the streets in order to meet up.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## How To Play
 
-## Available Scripts
+At the start of each round, you and your friend will be separated. Communicate with each other and navigate through the streets in order to join up with your friend before time runs out!
 
-In the project directory, you can run:
+## Game Modes
+### Random Game
+To be randomly paired up with another player, click on the "Random Game" button. Once the system finds a match, your game will begin!
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Private Game
+To create a private game, click on the "Private Game" button. Choose the city you wish to play in and a link will be generated for your game. Share this link with your friends in order to join the game.
